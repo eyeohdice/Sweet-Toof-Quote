@@ -40,7 +40,7 @@
 <body>
   <div class="container">
     <div class="svg-container" id="svgContainer">
-      <!-- SVG will be injected here -->
+      <!-- SVG gets injected here -->
     </div>
 
     <div class="controls">
@@ -83,16 +83,14 @@
     const IMPRESSION_COST = 3;
     const selectedTeeth = new Map();
 
-    // Load external SVG and inject into DOM
     document.addEventListener('DOMContentLoaded', async () => {
-      const svgPath = './assets/teeth-map.svg'; // Update this if it's somewhere else
+      const svgPath = './teeth-map.svg'; // ✅ since it's in the same folder as index.html
       const svgContainer = document.getElementById('svgContainer');
 
       try {
         const res = await fetch(svgPath);
         const svgText = await res.text();
         svgContainer.innerHTML = svgText;
-
         initToothInteractivity();
       } catch (err) {
         console.error('Failed to load SVG:', err);
