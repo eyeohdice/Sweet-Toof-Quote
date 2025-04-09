@@ -5,46 +5,136 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Sweet Toof – Custom Grillz Order</title>
   <style>
-    body { font-family: sans-serif; margin: 2rem auto; background: #fdfdfd; padding: 2rem; }
-    .container { display: flex; gap: 20px; justify-content: center; align-items: flex-start; }
-    .svg-container { position: relative; width: 50%; }
-    .interactive-path { transition: fill 0.3s ease; cursor: pointer; }
-    svg { max-width: 100%; height: auto; }
-    .tooth-label { position: absolute; font-size: 12px; text-align: center; bottom: -20px; font-weight: bold; }
-    .controls { padding: 20px; background: white; border-radius: 8px; box-shadow: 0 2px 5px rgba(0,0,0,0.1); width: 400px; }
-    h1 { font-weight: bold; color: #333; }
-    label { display: block; width: 100%; margin-bottom: 1rem; font-weight: bold; color: #444; }
-    select, input { width: 100%; padding: 5px; margin-top: 5px; }
-    .results { background: #f9f9f9; padding: 1rem; border-radius: 8px; margin-top: 1rem; }
+    body {
+      font-family: sans-serif;
+      margin: 0;
+      background: #fdfdfd;
+      padding: 2rem 1rem;
+    }
+    header {
+      text-align: center;
+      margin-bottom: 2rem;
+    }
+    header img {
+      max-width: 150px;
+    }
+    .container {
+      display: flex;
+      gap: 20px;
+      justify-content: center;
+      align-items: flex-start;
+      flex-wrap: wrap;
+    }
+    .svg-container {
+      position: relative;
+      width: 50%;
+      min-width: 300px;
+    }
+    svg {
+      max-width: 100%;
+      height: auto;
+    }
+    .interactive-path {
+      transition: fill 0.3s ease;
+      cursor: pointer;
+    }
+    .controls {
+      padding: 20px;
+      background: white;
+      border-radius: 8px;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+      width: 400px;
+      max-width: 100%;
+    }
+    h1 {
+      font-weight: bold;
+      color: #333;
+      text-align: center;
+    }
+    label {
+      display: block;
+      margin-bottom: 1rem;
+      font-weight: bold;
+      color: #444;
+    }
+    select, input {
+      width: 100%;
+      padding: 5px;
+      margin-top: 5px;
+    }
+    .results {
+      background: #f9f9f9;
+      padding: 1rem;
+      border-radius: 8px;
+      margin-top: 1rem;
+    }
     .results h3 { font-weight: bold; color: #333; }
     .results p { margin: 5px 0; }
     .results strong { color: #222; font-weight: bold; }
+
     .add-on-group { margin-bottom: 1rem; }
     .addon-buttons { display: flex; flex-wrap: wrap; gap: 3px; }
-    .addon-button { padding: 5px 10px; border: 1px solid #666; border-radius: 4px; cursor: pointer; background: #e0e0e0; color: #333; font-weight: 500; white-space: nowrap; }
-    .addon-button.selected { background: #4CAF50; color: white; border-color: #388E3C; }
-    .addon-button:hover { background: #d0d0d0; color: #222; }
-    .addon-button.selected:hover { background: #45a049; }
-    button { padding: 8px 16px; background: #4CAF50; color: white; border: none; border-radius: 5px; cursor: pointer; font-weight: bold; }
+    .addon-button {
+      padding: 5px 10px;
+      border: 1px solid #666;
+      border-radius: 4px;
+      cursor: pointer;
+      background: #e0e0e0;
+      color: #333;
+      font-weight: 500;
+      white-space: nowrap;
+    }
+    .addon-button.selected {
+      background: #4CAF50;
+      color: white;
+      border-color: #388E3C;
+    }
+    .addon-button:hover {
+      background: #d0d0d0;
+      color: #222;
+    }
+    .addon-button.selected:hover {
+      background: #45a049;
+    }
+
+    button {
+      padding: 8px 16px;
+      background: #4CAF50;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      font-weight: bold;
+      width: 100%;
+    }
+
     button:hover { background: #45a049; }
-    .tooth-selection { margin-bottom: 1rem; }
 
     @media (max-width: 600px) {
-      .container { flex-direction: column; }
-      .svg-container, .controls { width: 100%; }
-      .tooth-label { font-size: 10px; }
-      select, input { padding: 8px; }
+      .container {
+        flex-direction: column;
+        align-items: center;
+      }
+      .svg-container,
+      .controls {
+        width: 100%;
+        max-width: 400px;
+      }
     }
   </style>
 </head>
 <body>
+  <header>
+    <img src="sweet-toof-logo.png" alt="Sweet Toof Logo" />
+  </header>
+
   <div class="container">
     <div class="svg-container" id="svgContainer">
-      <!-- SVG gets injected here -->
+      <!-- SVG will be injected here -->
     </div>
 
     <div class="controls">
-      <h1>Sweet Toof – Custom Grillz</h1>
+      <h1>Custom Grillz</h1>
       <label>Client Name
         <input type="text" id="clientName" />
       </label>
@@ -84,13 +174,15 @@
     const selectedTeeth = new Map();
 
     document.addEventListener('DOMContentLoaded', async () => {
-      const svgPath = './teeth-map.svg'; // ✅ since it's in the same folder as index.html
+      const svgPath = './teeth-map.svg';
       const svgContainer = document.getElementById('svgContainer');
 
       try {
         const res = await fetch(svgPath);
         const svgText = await res.text();
         svgContainer.innerHTML = svgText;
+
+        addSVGLabels(); // new label injection
         initToothInteractivity();
       } catch (err) {
         console.error('Failed to load SVG:', err);
@@ -100,12 +192,10 @@
 
     function initToothInteractivity() {
       const paths = document.querySelectorAll('.interactive-path');
-
       paths.forEach(path => {
         path.addEventListener('click', () => {
           const toothId = path.dataset.tooth;
           const isSelected = path.getAttribute('fill') === '#b0d5ee';
-
           path.setAttribute('fill', isSelected ? 'transparent' : '#b0d5ee');
 
           if (isSelected) {
@@ -116,6 +206,36 @@
             addToothControl(toothId);
           }
         });
+      });
+    }
+
+    function addSVGLabels() {
+      const svg = document.querySelector('svg');
+      if (!svg) return;
+
+      const labels = [
+        { id: 'L1', x: 60, y: 420 },
+        { id: 'L2', x: 125, y: 420 },
+        { id: 'L3', x: 190, y: 420 },
+        { id: 'L4', x: 255, y: 420 },
+        { id: 'L5', x: 320, y: 420 },
+        { id: 'R1', x: 545, y: 420 },
+        { id: 'R2', x: 610, y: 420 },
+        { id: 'R3', x: 675, y: 420 },
+        { id: 'R4', x: 740, y: 420 },
+        { id: 'R5', x: 805, y: 420 }
+      ];
+
+      labels.forEach(label => {
+        const text = document.createElementNS("http://www.w3.org/2000/svg", "text");
+        text.setAttribute('x', label.x);
+        text.setAttribute('y', label.y);
+        text.setAttribute('font-size', '14');
+        text.setAttribute('font-weight', 'bold');
+        text.setAttribute('text-anchor', 'middle');
+        text.setAttribute('fill', '#000');
+        text.textContent = label.id;
+        svg.appendChild(text);
       });
     }
 
