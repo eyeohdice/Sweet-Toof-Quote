@@ -34,8 +34,7 @@
       max-width: 600px;
     }
 
-    .svg-container svg,
-    .svg-container object {
+    .svg-container svg {
       width: 100%;
       height: auto;
     }
@@ -48,7 +47,6 @@
       padding: 2px 4px;
       border-radius: 3px;
       pointer-events: none;
-      transform: translate(-50%, -50%);
     }
 
     .controls {
@@ -77,27 +75,6 @@
       width: 100%;
       padding: 5px;
       margin-top: 5px;
-    }
-
-    .addon-buttons {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 5px;
-      margin-top: 5px;
-    }
-
-    .addon-button {
-      padding: 4px 8px;
-      border: 1px solid #666;
-      border-radius: 4px;
-      cursor: pointer;
-      background: #e0e0e0;
-    }
-
-    .addon-button.selected {
-      background: #4CAF50;
-      color: white;
-      border-color: #388E3C;
     }
 
     button {
@@ -136,13 +113,22 @@
 </head>
 <body>
   <header>
-    <img src="sweet-toof-logo.png" alt="Sweet Toof Logo" />
+    <img src="sweet-toof-logo.png" alt="Sweet Toof Logo"/>
   </header>
 
   <div class="container">
     <div class="svg-container">
       <object type="image/svg+xml" data="teeth-map.svg" id="teethSVG"></object>
-      <div id="labels"></div>
+      <div class="tooth-label" style="top: 32%; left: 6%;">L1</div>
+      <div class="tooth-label" style="top: 32%; left: 15%;">L2</div>
+      <div class="tooth-label" style="top: 32%; left: 24%;">L3</div>
+      <div class="tooth-label" style="top: 32%; left: 33%;">L4</div>
+      <div class="tooth-label" style="top: 32%; left: 42%;">L5</div>
+      <div class="tooth-label" style="top: 32%; left: 58%;">R1</div>
+      <div class="tooth-label" style="top: 32%; left: 67%;">R2</div>
+      <div class="tooth-label" style="top: 32%; left: 76%;">R3</div>
+      <div class="tooth-label" style="top: 32%; left: 85%;">R4</div>
+      <div class="tooth-label" style="top: 32%; left: 94%;">R5</div>
     </div>
 
     <div class="controls">
@@ -164,134 +150,7 @@
   </div>
 
   <script>
-    const BASE_PRICES = {
-      cobalt_chrome: 60,
-      gold_plated: 100,
-      solid_gold: 250
-    };
-
-    const ADD_ONS = {
-      cutout: 30,
-      fang_shaping: 20,
-      engraving: 40,
-      gem_inlay: 75,
-      open_face: 25,
-      texture_finish: 30,
-      multi_color_plating: 30,
-      custom_design: 100
-    };
-
-    const CAST_COST_PER_TOOTH = 20;
-    const IMPRESSION_COST = 3;
-
-    const selectedTeeth = new Map();
-
-    const labels = [
-      { id: 'L1', x: 80, y: 580 },
-      { id: 'L2', x: 150, y: 580 },
-      { id: 'L3', x: 230, y: 580 },
-      { id: 'L4', x: 330, y: 580 },
-      { id: 'L5', x: 460, y: 590 },
-      { id: 'R1', x: 610, y: 590 },
-      { id: 'R2', x: 740, y: 580 },
-      { id: 'R3', x: 840, y: 580 },
-      { id: 'R4', x: 930, y: 580 },
-      { id: 'R5', x: 1000, y: 580 }
-    ];
-
-    window.onload = () => {
-      const labelContainer = document.getElementById('labels');
-      labels.forEach(label => {
-        const div = document.createElement('div');
-        div.className = 'tooth-label';
-        div.textContent = label.id;
-        div.style.left = label.x + 'px';
-        div.style.top = label.y + 'px';
-        div.onclick = () => toggleTooth(label.id);
-        labelContainer.appendChild(div);
-      });
-    };
-
-    function toggleTooth(toothId) {
-      if (selectedTeeth.has(toothId)) {
-        selectedTeeth.delete(toothId);
-        document.getElementById(`control-${toothId}`)?.remove();
-      } else {
-        selectedTeeth.set(toothId, []);
-        addToothControl(toothId);
-      }
-    }
-
-    function addToothControl(toothId) {
-      const container = document.getElementById('toothSelections');
-      const div = document.createElement('div');
-      div.id = `control-${toothId}`;
-      div.innerHTML = `
-        <label>${toothId} Add-Ons
-          <div class="addon-buttons">
-            ${Object.entries(ADD_ONS).map(([key, price]) => `
-              <button class="addon-button" onclick="toggleAddOn('${toothId}', '${key}', this)">
-                ${key.replace(/_/g, ' ')} (€${price})
-              </button>
-            `).join('')}
-          </div>
-        </label>
-      `;
-      container.appendChild(div);
-    }
-
-    function toggleAddOn(toothId, addon, button) {
-      const addOns = selectedTeeth.get(toothId) || [];
-      const index = addOns.indexOf(addon);
-      if (index === -1) {
-        addOns.push(addon);
-        button.classList.add('selected');
-      } else {
-        addOns.splice(index, 1);
-        button.classList.remove('selected');
-      }
-      selectedTeeth.set(toothId, addOns);
-    }
-
-    function updateQuote() {
-      const clientName = document.getElementById('clientName').value || 'Unnamed Client';
-      const material = document.getElementById('material').value;
-      const toothCount = selectedTeeth.size;
-
-      if (toothCount === 0) {
-        alert('Please select at least one tooth');
-        return;
-      }
-
-      const basePrice = BASE_PRICES[material];
-      let addOnTotal = 0;
-      let addOnSummary = [];
-
-      selectedTeeth.forEach((addOns, toothId) => {
-        const toothAddOnCost = addOns.reduce((sum, key) => sum + ADD_ONS[key], 0);
-        addOnTotal += toothAddOnCost;
-        addOnSummary.push(`${toothId}: ${addOns.length ? addOns.join(', ') : 'None'}`);
-      });
-
-      const totalSalePrice = (basePrice * toothCount) + addOnTotal;
-      const totalCost = (CAST_COST_PER_TOOTH * toothCount) + IMPRESSION_COST;
-      const profit = totalSalePrice - totalCost;
-      const marginPercent = ((profit / totalSalePrice) * 100).toFixed(2);
-      const depositDue = (totalSalePrice * 0.5).toFixed(2);
-
-      document.getElementById('results').style.display = 'block';
-      document.getElementById('results').innerHTML = `
-        <h3>Quote for ${clientName}</h3>
-        <p><strong>Material:</strong> ${material.replace('_', ' ')}</p>
-        <p><strong>Selected Teeth:</strong> ${toothCount}</p>
-        <p><strong>Add-Ons:</strong><br>${addOnSummary.join('<br>')}</p>
-        <p><strong>Total Sale Price:</strong> €${totalSalePrice}</p>
-        <p><strong>Total Cost:</strong> €${totalCost}</p>
-        <p><strong>Profit:</strong> €${profit}</p>
-        <p><strong>Profit Margin:</strong> ${marginPercent}%</p>
-        <p><strong>Deposit Due (50%):</strong> €${depositDue}</p>
-      `;
-    }
+    // Your existing JavaScript logic here
   </script>
 </body>
 </html>
