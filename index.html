@@ -22,7 +22,7 @@
         .add-on-group { margin-bottom: 1rem; }
         .addon-buttons { display: flex; flex-wrap: wrap; gap: 3px; }
         .addon-button { 
-            padding: 3px 6px; 
+            padding: 5px 10px; 
             border: 1px solid #666; 
             border-radius: 4px; 
             cursor: pointer; 
@@ -32,16 +32,16 @@
             white-space: nowrap; 
         }
         .addon-button.selected { 
-            background: #4682b4; 
+            background: #4CAF50; 
             color: white; 
-            border-color: #2f5a7a; 
+            border-color: #388E3C; 
         }
         .addon-button:hover { 
             background: #d0d0d0; 
             color: #222; 
         }
         .addon-button.selected:hover { 
-            background: #3b6e99; 
+            background: #45a049; 
         }
         button { 
             padding: 8px 16px; 
@@ -54,6 +54,25 @@
         }
         button:hover { background: #45a049; }
         .tooth-selection { margin-bottom: 1rem; }
+
+        /* Mobile Optimization */
+        @media (max-width: 600px) {
+            .container {
+                flex-direction: column;
+            }
+            .svg-container {
+                width: 100%;
+            }
+            .controls {
+                width: 100%;
+            }
+            .tooth-label {
+                font-size: 10px;
+            }
+            select, input {
+                padding: 8px;
+            }
+        }
     </style>
 </head>
 <body>
