@@ -155,20 +155,60 @@
       { id: 'R5', x: 1000, y: 580 }
     ];
 
-    const svgContainer = document.getElementById('svgContainer');
+    const prices = {
+      cobalt_chrome: 60,
+      gold_plated: 100,
+      solid_gold: 250
+    };
 
+    // Create checkbox UI
+    const toothSelections = document.getElementById('toothSelections');
     labels.forEach(label => {
       const div = document.createElement('div');
-      div.classList.add('tooth-label');
-      div.innerText = label.id;
-      div.style.left = `${label.x * 100 / 1080}%`;
-      div.style.top = `${label.y * 100 / 1080}%`;
-      svgContainer.appendChild(div);
+      div.innerHTML = `
+        <label>
+          <input type="checkbox" value="${label.id}" /> ${label.id}
+        </label>
+      `;
+      toothSelections.appendChild(div);
+    });
+
+    // Render floating labels on the SVG
+    window.addEventListener('DOMContentLoaded', () => {
+      const container = document.getElementById('svgContainer');
+      labels.forEach(label => {
+        const div = document.createElement('div');
+        div.className = 'tooth-label';
+        div.style.left = `${(label.x / 1080) * 100}%`;
+        div.style.top = `${(label.y / 1080) * 100}%`;
+        div.innerText = label.id;
+        container.appendChild(div);
+      });
     });
 
     function updateQuote() {
-      // Your quote generation logic goes here
-      alert('Quote generation logic not implemented in this snippet.');
+      const name = document.getElementById('clientName').value.trim();
+      const material = document.getElementById('material').value;
+      const selected = Array.from(document.querySelectorAll('input[type="checkbox"]:checked')).map(cb => cb.value);
+
+      if (!name || selected.length === 0) {
+        alert("Please enter the client's name and select at least one tooth.");
+        return;
+      }
+
+      const unitPrice = prices[material];
+      const total = unitPrice * selected.length;
+
+      const output = `
+        <strong>Client:</strong> ${name}<br/>
+        <strong>Material:</strong> ${material.replace('_', ' ')}<br/>
+        <strong>Selected Teeth:</strong> ${selected.join(', ')}<br/>
+        <strong>Total Price:</strong> €${total}
+      `;
+
+      const resultBox = document.getElementById('results');
+      resultBox.innerHTML = output;
+      resultBox.style.display = 'block';
     }
   </script>
 </body>
