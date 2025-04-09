@@ -11,75 +11,82 @@
       background: #fdfdfd;
       padding: 2rem 1rem;
     }
+
     header {
       text-align: center;
       margin-bottom: 2rem;
     }
+
     header img {
       max-width: 150px;
     }
+
     .container {
       display: flex;
-      gap: 20px;
+      flex-direction: column;
+      align-items: center;
       justify-content: center;
-      align-items: flex-start;
-      flex-wrap: wrap;
+      gap: 20px;
     }
+
     .svg-container {
       position: relative;
-      width: 50%;
-      min-width: 300px;
+      width: 100%;
+      max-width: 600px;
     }
-    .svg-instruction {
-      text-align: center;
-      font-size: 16px;
-      font-weight: 600;
-      margin-bottom: 10px;
-      color: #333;
-    }
+
     svg {
       max-width: 100%;
       height: auto;
     }
-    svg text {
-      font-size: 16px;
-      font-weight: bold;
-      pointer-events: none;
-    }
+
     .interactive-path {
       transition: fill 0.3s ease;
       cursor: pointer;
     }
+
+    .prompt-text {
+      font-weight: bold;
+      text-align: center;
+      font-size: 1.1rem;
+      margin-bottom: 10px;
+    }
+
     .controls {
       padding: 20px;
       background: white;
       border-radius: 8px;
       box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-      width: 400px;
-      max-width: 100%;
+      width: 100%;
+      max-width: 400px;
     }
+
     h1 {
       font-weight: bold;
       color: #333;
       text-align: center;
     }
+
     label {
       display: block;
       margin-bottom: 1rem;
       font-weight: bold;
       color: #444;
     }
+
     select, input {
       width: 100%;
       padding: 5px;
       margin-top: 5px;
     }
+
     .results {
       background: #f9f9f9;
       padding: 1rem;
       border-radius: 8px;
       margin-top: 1rem;
     }
+
     .results h3 { font-weight: bold; color: #333; }
     .results p { margin: 5px 0; }
     .results strong { color: #222; font-weight: bold; }
@@ -96,15 +103,18 @@
       font-weight: 500;
       white-space: nowrap;
     }
+
     .addon-button.selected {
       background: #4CAF50;
       color: white;
       border-color: #388E3C;
     }
+
     .addon-button:hover {
       background: #d0d0d0;
       color: #222;
     }
+
     .addon-button.selected:hover {
       background: #45a049;
     }
@@ -123,11 +133,6 @@
     button:hover { background: #45a049; }
 
     @media (max-width: 600px) {
-      .container {
-        flex-direction: column;
-        align-items: center;
-      }
-      .svg-container,
       .controls {
         width: 100%;
         max-width: 400px;
@@ -141,8 +146,9 @@
   </header>
 
   <div class="container">
+    <div class="prompt-text">Click on the teeth to add to your custom grillz order – unclick to remove.</div>
+
     <div class="svg-container" id="svgContainer">
-      <p class="svg-instruction">Click on the teeth to add to your custom grillz order – unclick to remove.</p>
       <!-- SVG will be injected here -->
     </div>
 
@@ -193,7 +199,7 @@
       try {
         const res = await fetch(svgPath);
         const svgText = await res.text();
-        svgContainer.insertAdjacentHTML('beforeend', svgText);
+        svgContainer.innerHTML = svgText;
 
         addSVGLabels();
         initToothInteractivity();
@@ -227,23 +233,30 @@
       if (!svg) return;
 
       const labels = [
-        { id: 'L1', xPercent: 7.5, yPercent: 60 },
-        { id: 'L2', xPercent: 14, yPercent: 60 },
-        { id: 'L3', xPercent: 21.5, yPercent: 60 },
-        { id: 'L4', xPercent: 30, yPercent: 60 },
-        { id: 'L5', xPercent: 38.5, yPercent: 61 },
-
-        { id: 'R1', xPercent: 56.5, yPercent: 61 },
-        { id: 'R2', xPercent: 65.5, yPercent: 60 },
-        { id: 'R3', xPercent: 73, yPercent: 60 },
-        { id: 'R4', xPercent: 80.5, yPercent: 60 },
-        { id: 'R5', xPercent: 88.5, yPercent: 60 }
+        { id: 'L1', x: 80, y: 580 },
+        { id: 'L2', x: 150, y: 580 },
+        { id: 'L3', x: 230, y: 580 },
+        { id: 'L4', x: 330, y: 580 },
+        { id: 'L5', x: 460, y: 590 },
+        { id: 'R1', x: 610, y: 590 },
+        { id: 'R2', x: 740, y: 580 },
+        { id: 'R3', x: 840, y: 580 },
+        { id: 'R4', x: 930, y: 580 },
+        { id: 'R5', x: 1000, y: 580 }
       ];
 
+      const viewBoxWidth = 1080;
+      const viewBoxHeight = 1080;
+
       labels.forEach(label => {
+        const percentX = (label.x / viewBoxWidth) * 100;
+        const percentY = (label.y / viewBoxHeight) * 100;
+
         const text = document.createElementNS("http://www.w3.org/2000/svg", "text");
-        text.setAttribute('x', `${label.xPercent}%`);
-        text.setAttribute('y', `${label.yPercent}%`);
+        text.setAttribute('x', `${percentX}%`);
+        text.setAttribute('y', `${percentY}%`);
+        text.setAttribute('font-size', '16');
+        text.setAttribute('font-weight', 'bold');
         text.setAttribute('text-anchor', 'middle');
         text.setAttribute('fill', '#000');
         text.textContent = label.id;
