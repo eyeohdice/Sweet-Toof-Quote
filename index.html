@@ -44,7 +44,7 @@
       position: absolute;
       font-size: 12px;
       font-weight: bold;
-      background: rgba(255, 255, 255, 0.8);
+      background: rgba(255, 255, 255, 0.7);
       padding: 2px 4px;
       border-radius: 3px;
       pointer-events: none;
@@ -77,6 +77,27 @@
       width: 100%;
       padding: 5px;
       margin-top: 5px;
+    }
+
+    .addon-buttons {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 5px;
+      margin-top: 5px;
+    }
+
+    .addon-button {
+      padding: 4px 8px;
+      border: 1px solid #666;
+      border-radius: 4px;
+      cursor: pointer;
+      background: #e0e0e0;
+    }
+
+    .addon-button.selected {
+      background: #4CAF50;
+      color: white;
+      border-color: #388E3C;
     }
 
     button {
@@ -115,12 +136,13 @@
 </head>
 <body>
   <header>
-    <img src="sweet-toof-logo.png" alt="Sweet Toof Logo"/>
+    <img src="sweet-toof-logo.png" alt="Sweet Toof Logo" />
   </header>
 
   <div class="container">
-    <div class="svg-container" id="svgContainer">
+    <div class="svg-container">
       <object type="image/svg+xml" data="teeth-map.svg" id="teethSVG"></object>
+      <div id="labels"></div>
     </div>
 
     <div class="controls">
@@ -142,6 +164,28 @@
   </div>
 
   <script>
+    const BASE_PRICES = {
+      cobalt_chrome: 60,
+      gold_plated: 100,
+      solid_gold: 250
+    };
+
+    const ADD_ONS = {
+      cutout: 30,
+      fang_shaping: 20,
+      engraving: 40,
+      gem_inlay: 75,
+      open_face: 25,
+      texture_finish: 30,
+      multi_color_plating: 30,
+      custom_design: 100
+    };
+
+    const CAST_COST_PER_TOOTH = 20;
+    const IMPRESSION_COST = 3;
+
+    const selectedTeeth = new Map();
+
     const labels = [
       { id: 'L1', x: 80, y: 580 },
       { id: 'L2', x: 150, y: 580 },
@@ -155,60 +199,98 @@
       { id: 'R5', x: 1000, y: 580 }
     ];
 
-    const prices = {
-      cobalt_chrome: 60,
-      gold_plated: 100,
-      solid_gold: 250
-    };
-
-    // Create checkbox UI
-    const toothSelections = document.getElementById('toothSelections');
-    labels.forEach(label => {
-      const div = document.createElement('div');
-      div.innerHTML = `
-        <label>
-          <input type="checkbox" value="${label.id}" /> ${label.id}
-        </label>
-      `;
-      toothSelections.appendChild(div);
-    });
-
-    // Render floating labels on the SVG
-    window.addEventListener('DOMContentLoaded', () => {
-      const container = document.getElementById('svgContainer');
+    window.onload = () => {
+      const labelContainer = document.getElementById('labels');
       labels.forEach(label => {
         const div = document.createElement('div');
         div.className = 'tooth-label';
-        div.style.left = `${(label.x / 1080) * 100}%`;
-        div.style.top = `${(label.y / 1080) * 100}%`;
-        div.innerText = label.id;
-        container.appendChild(div);
+        div.textContent = label.id;
+        div.style.left = label.x + 'px';
+        div.style.top = label.y + 'px';
+        div.onclick = () => toggleTooth(label.id);
+        labelContainer.appendChild(div);
       });
-    });
+    };
+
+    function toggleTooth(toothId) {
+      if (selectedTeeth.has(toothId)) {
+        selectedTeeth.delete(toothId);
+        document.getElementById(`control-${toothId}`)?.remove();
+      } else {
+        selectedTeeth.set(toothId, []);
+        addToothControl(toothId);
+      }
+    }
+
+    function addToothControl(toothId) {
+      const container = document.getElementById('toothSelections');
+      const div = document.createElement('div');
+      div.id = `control-${toothId}`;
+      div.innerHTML = `
+        <label>${toothId} Add-Ons
+          <div class="addon-buttons">
+            ${Object.entries(ADD_ONS).map(([key, price]) => `
+              <button class="addon-button" onclick="toggleAddOn('${toothId}', '${key}', this)">
+                ${key.replace(/_/g, ' ')} (€${price})
+              </button>
+            `).join('')}
+          </div>
+        </label>
+      `;
+      container.appendChild(div);
+    }
+
+    function toggleAddOn(toothId, addon, button) {
+      const addOns = selectedTeeth.get(toothId) || [];
+      const index = addOns.indexOf(addon);
+      if (index === -1) {
+        addOns.push(addon);
+        button.classList.add('selected');
+      } else {
+        addOns.splice(index, 1);
+        button.classList.remove('selected');
+      }
+      selectedTeeth.set(toothId, addOns);
+    }
 
     function updateQuote() {
-      const name = document.getElementById('clientName').value.trim();
+      const clientName = document.getElementById('clientName').value || 'Unnamed Client';
       const material = document.getElementById('material').value;
-      const selected = Array.from(document.querySelectorAll('input[type="checkbox"]:checked')).map(cb => cb.value);
+      const toothCount = selectedTeeth.size;
 
-      if (!name || selected.length === 0) {
-        alert("Please enter the client's name and select at least one tooth.");
+      if (toothCount === 0) {
+        alert('Please select at least one tooth');
         return;
       }
 
-      const unitPrice = prices[material];
-      const total = unitPrice * selected.length;
+      const basePrice = BASE_PRICES[material];
+      let addOnTotal = 0;
+      let addOnSummary = [];
 
-      const output = `
-        <strong>Client:</strong> ${name}<br/>
-        <strong>Material:</strong> ${material.replace('_', ' ')}<br/>
-        <strong>Selected Teeth:</strong> ${selected.join(', ')}<br/>
-        <strong>Total Price:</strong> €${total}
+      selectedTeeth.forEach((addOns, toothId) => {
+        const toothAddOnCost = addOns.reduce((sum, key) => sum + ADD_ONS[key], 0);
+        addOnTotal += toothAddOnCost;
+        addOnSummary.push(`${toothId}: ${addOns.length ? addOns.join(', ') : 'None'}`);
+      });
+
+      const totalSalePrice = (basePrice * toothCount) + addOnTotal;
+      const totalCost = (CAST_COST_PER_TOOTH * toothCount) + IMPRESSION_COST;
+      const profit = totalSalePrice - totalCost;
+      const marginPercent = ((profit / totalSalePrice) * 100).toFixed(2);
+      const depositDue = (totalSalePrice * 0.5).toFixed(2);
+
+      document.getElementById('results').style.display = 'block';
+      document.getElementById('results').innerHTML = `
+        <h3>Quote for ${clientName}</h3>
+        <p><strong>Material:</strong> ${material.replace('_', ' ')}</p>
+        <p><strong>Selected Teeth:</strong> ${toothCount}</p>
+        <p><strong>Add-Ons:</strong><br>${addOnSummary.join('<br>')}</p>
+        <p><strong>Total Sale Price:</strong> €${totalSalePrice}</p>
+        <p><strong>Total Cost:</strong> €${totalCost}</p>
+        <p><strong>Profit:</strong> €${profit}</p>
+        <p><strong>Profit Margin:</strong> ${marginPercent}%</p>
+        <p><strong>Deposit Due (50%):</strong> €${depositDue}</p>
       `;
-
-      const resultBox = document.getElementById('results');
-      resultBox.innerHTML = output;
-      resultBox.style.display = 'block';
     }
   </script>
 </body>
