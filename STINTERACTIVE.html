@@ -1,0 +1,250 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Sweet Toof Quote Generator</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      max-width: 600px;
+      margin: 2rem auto;
+      background-color: #f5f5f5;
+      padding: 2rem;
+      border-radius: 10px;
+      box-shadow: 0 0 10px rgba(0,0,0,0.1);
+    }
+    h1 { text-align: center; }
+    label, select, input, button {
+      display: block;
+      width: 100%;
+      margin-bottom: 1rem;
+    }
+    .checkbox-group {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+    .checkbox-label {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background-color: #fff;
+      padding: 0.5rem;
+      border-radius: 5px;
+      box-shadow: 0 0 3px rgba(0,0,0,0.1);
+    }
+    .checkbox-label input[type="number"] {
+      width: 60px;
+      margin-left: 10px;
+    }
+    .checkbox-label span.price-tag::before {
+      content: '€';
+      margin-right: 2px;
+    }
+    .results {
+      background-color: #e0e0e0;
+      padding: 1rem;
+      border-radius: 8px;
+      margin-top: 1rem;
+    }
+    .logo-container {
+      text-align: center;
+      margin-bottom: 10px;
+    }
+    .logo-container img {
+      max-width: 250px;
+      height: auto;
+    }
+    .logo-container a {
+      display: inline-block;
+      margin-top: 10px;
+      font-weight: bold;
+      color: #0077cc;
+      text-decoration: none;
+    }
+    .logo-container a:hover {
+      text-decoration: underline;
+    }
+    .profit-section {
+      display: none;
+      margin-top: 1rem;
+      background: #fff9c4;
+      padding: 1rem;
+      border-radius: 8px;
+    }
+  </style>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+</head>
+<body>
+  <div class="logo-container">
+    <img src="sweet-toof-logo.png" alt="Sweet Toof Logo">
+    <a href="https://www.instagram.com/Sweet.Toof.cy" target="_blank">Contact on Instagram for custom orders</a>
+  </div>
+
+  <h1>Sweet Toof – Quote Generator</h1>
+
+  <label>Client Name
+    <input type="text" id="clientName">
+  </label>
+
+  <label>Material
+    <select id="material">
+      <option value="cobalt_chrome">Cobalt Chrome (€60)</option>
+      <option value="gold_plated">Gold Plated (€100)</option>
+      <option value="solid_gold">Solid Gold (€250)</option>
+    </select>
+  </label>
+
+  <label>Number of Teeth
+    <input type="number" id="toothCount" value="1" min="1">
+  </label>
+
+  <label>Add-ons (enter how many teeth use each and price per add-on)</label>
+  <div class="checkbox-group" id="addOns"></div>
+
+  <button onclick="generateQuote()">Generate Quote</button>
+  <button onclick="downloadPDF()">Download PDF</button>
+  <button onclick="revealProfit()">Show Profit (Locked)</button>
+
+  <div id="results" class="results" style="display:none;"></div>
+  <div id="profitInfo" class="profit-section"></div>
+
+  <script>
+    const BASE_PRICES = {
+      cobalt_chrome: 60,
+      gold_plated: 100,
+      solid_gold: 250
+    };
+
+    const DEFAULT_ADD_ONS = {
+      cutout: 30,
+      fang_shaping: 20,
+      engraving: 40,
+      gem_inlay: 75,
+      open_face: 25,
+      texture_finish: 30,
+      multi_color_plating: 30,
+      custom_design: 100
+    };
+
+    const CAST_COST_PER_TOOTH = 20;
+    const IMPRESSION_COST = 3;
+
+    const addOnsContainer = document.getElementById("addOns");
+    for (const [key, price] of Object.entries(DEFAULT_ADD_ONS)) {
+      const label = document.createElement("label");
+      label.className = "checkbox-label";
+
+      const desc = document.createElement("span");
+      desc.textContent = key.replace('_', ' ');
+
+      const quantity = document.createElement("input");
+      quantity.type = "number";
+      quantity.min = "0";
+      quantity.value = "0";
+      quantity.id = `qty-${key}`;
+
+      const priceInput = document.createElement("input");
+      priceInput.type = "number";
+      priceInput.min = "0";
+      priceInput.step = "0.01";
+      priceInput.value = price;
+      priceInput.id = `price-${key}`;
+      priceInput.className = 'price-tag';
+
+      label.appendChild(desc);
+      label.appendChild(quantity);
+      label.appendChild(priceInput);
+      addOnsContainer.appendChild(label);
+    }
+
+    let latestQuote = {};
+
+    function generateQuote() {
+      const clientName = document.getElementById("clientName").value || "Unnamed Client";
+      const material = document.getElementById("material").value;
+      const toothCount = parseInt(document.getElementById("toothCount").value);
+
+      const addOnSelections = {};
+      let addOnTotal = 0;
+
+      for (const key of Object.keys(DEFAULT_ADD_ONS)) {
+        const qty = parseInt(document.getElementById(`qty-${key}`).value) || 0;
+        const price = parseFloat(document.getElementById(`price-${key}`).value) || 0;
+
+        if (qty > 0) {
+          addOnSelections[key] = { qty, price };
+          addOnTotal += price * qty;
+        }
+      }
+
+      const basePrice = BASE_PRICES[material];
+      const totalSale = (basePrice * toothCount) + addOnTotal;
+      const totalCost = (CAST_COST_PER_TOOTH * toothCount) + IMPRESSION_COST;
+      const profit = totalSale - totalCost;
+      const margin = ((profit / totalSale) * 100).toFixed(2);
+      const deposit = (totalSale * 0.5).toFixed(2);
+
+      const addOnSummary = Object.entries(addOnSelections)
+        .map(([key, data]) => `${key.replace('_', ' ')} x${data.qty} (€${data.price})`)
+        .join(', ') || 'None';
+
+      latestQuote = {
+        clientName,
+        material,
+        toothCount,
+        addOnSummary,
+        totalSale,
+        deposit,
+        profit,
+        totalCost,
+        margin
+      };
+
+      document.getElementById("results").style.display = "block";
+      document.getElementById("results").innerHTML = `
+        <h3>Quote for ${clientName}</h3>
+        <p><strong>Material:</strong> ${material.replace('_', ' ')}</p>
+        <p><strong>Number of Teeth:</strong> ${toothCount}</p>
+        <p><strong>Add-Ons:</strong> ${addOnSummary}</p>
+        <p><strong>Total Sale Price:</strong> €${totalSale.toFixed(2)}</p>
+        <p><strong>Deposit Due (50%):</strong> €${deposit}</p>
+      `;
+
+      document.getElementById("profitInfo").innerHTML = `
+        <p><strong>Profit:</strong> €${profit.toFixed(2)}</p>
+        <p><strong>Margin:</strong> ${margin}%</p>
+        <p><strong>Total Cost:</strong> €${totalCost.toFixed(2)}</p>
+      `;
+    }
+
+    async function downloadPDF() {
+      const { jsPDF } = window.jspdf;
+      const doc = new jsPDF();
+      doc.setFontSize(12);
+
+      const lines = [
+        `Quote for ${latestQuote.clientName}`,
+        `Material: ${latestQuote.material.replace('_', ' ')}`,
+        `Teeth: ${latestQuote.toothCount}`,
+        `Add-Ons: ${latestQuote.addOnSummary}`,
+        `Total Sale Price: €${latestQuote.totalSale.toFixed(2)}`,
+        `Deposit Due (50%): €${latestQuote.deposit}`
+      ];
+
+      lines.forEach((line, i) => doc.text(line, 10, 20 + i * 10));
+      doc.save('sweet-toof-quote.pdf');
+    }
+
+    function revealProfit() {
+      const password = prompt("Enter password to view profit details:");
+      if (password === "IODICE25") {
+        document.getElementById("profitInfo").style.display = "block";
+      } else {
+        alert("Incorrect password.");
+      }
+    }
+  </script>
+</body>
+</html>
