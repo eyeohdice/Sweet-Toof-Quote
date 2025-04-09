@@ -140,6 +140,28 @@
     }
   </style>
 </head>
+  <!-- Lock Icon -->
+<div id="lockIcon" style="
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  background: #fff;
+  border: 2px solid #999;
+  border-radius: 50%;
+  width: 40px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  z-index: 9999;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+  font-size: 18px;
+  font-weight: bold;
+  user-select: none;
+">
+  🔒
+</div>
 <body>
   <header>
     <img src="sweet-toof-logo.png" alt="Sweet Toof Logo" />
@@ -309,11 +331,7 @@
       const material = document.getElementById('material').value;
       const toothCount = selectedTeeth.size;
 
-      if (toothCount === 0) {
-        alert('Please select at least one tooth');
-        return;
-      }
-
+    
       const basePrice = BASE_PRICES[material];
       let addOnTotal = 0;
       let addOnSummary = [];
@@ -345,5 +363,90 @@
       `;
     }
   </script>
+
+  <script>
+  const LOCKED_FIELDS = ['Total Cost', 'Profit', 'Profit Margin', 'Deposit Due'];
+  const PASSWORD_HASH = '4d9c1535e7b3f07d527bde7a0209d98db6129fd22a74982657a3f107e5cd09dc'; // SHA256 of IODICE25
+  let isUnlocked = false;
+
+  const lockIcon = document.getElementById('lockIcon');
+
+  lockIcon.addEventListener('click', async () => {
+    if (!isUnlocked) {
+      const userInput = prompt("Enter admin password to unlock sensitive info:");
+      if (!userInput) return;
+
+      const hashBuffer = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(userInput));
+      const hashArray = Array.from(new Uint8Array(hashBuffer));
+      const hashHex = hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
+
+      if (hashHex === PASSWORD_HASH) {
+        isUnlocked = true;
+        lockIcon.textContent = '🔓';
+        updateQuote();
+      } else {
+        alert("Incorrect password.");
+      }
+    } else {
+      // Lock it again
+      isUnlocked = false;
+      lockIcon.textContent = '🔒';
+      updateQuote();
+    }
+  });
+
+  // Modified updateQuote() function
+  const originalUpdateQuote = updateQuote;
+  updateQuote = function () {
+    const clientName = document.getElementById('clientName').value || 'Unnamed Client';
+    const material = document.getElementById('material').value;
+    const toothCount = selectedTeeth.size;
+
+    if (toothCount === 0) {
+      alert('Please select at least one tooth');
+      return;
+    }
+
+    const basePrice = BASE_PRICES[material];
+    let addOnTotal = 0;
+    let addOnSummary = [];
+
+    selectedTeeth.forEach((addOns, toothId) => {
+      const cost = addOns.reduce((sum, key) => sum + ADD_ONS[key], 0);
+      addOnTotal += cost;
+      addOnSummary.push(`${toothId}: ${addOns.length ? addOns.join(', ') : 'None'}`);
+    });
+
+    const totalSalePrice = (basePrice + addOnTotal) * toothCount;
+    const totalCost = (CAST_COST_PER_TOOTH * toothCount) + IMPRESSION_COST;
+    const profit = totalSalePrice - totalCost;
+    const marginPercent = ((profit / totalSalePrice) * 100).toFixed(2);
+    const depositDue = (totalSalePrice * 0.5).toFixed(2);
+
+    const results = document.getElementById('results');
+    results.style.display = 'block';
+
+    let html = `
+      <h3>Quote for ${clientName}</h3>
+      <p><strong>Material:</strong> ${material.replace('_', ' ')}</p>
+      <p><strong>Selected Teeth:</strong> ${toothCount}</p>
+      <p><strong>Add-Ons:</strong><br>${addOnSummary.join('<br>')}</p>
+      <p><strong>Total Sale Price:</strong> €${totalSalePrice}</p>
+    `;
+
+    if (isUnlocked) {
+      html += `
+        <p><strong>Total Cost:</strong> €${totalCost}</p>
+        <p><strong>Profit:</strong> €${profit}</p>
+        <p><strong>Profit Margin:</strong> ${marginPercent}%</p>
+        <p><strong>Deposit Due (50%):</strong> €${depositDue}</p>
+      `;
+    }
+
+    results.innerHTML = html;
+  };
+</script>
+
+  
 </body>
 </html>
