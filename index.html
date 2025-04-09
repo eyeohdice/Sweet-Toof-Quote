@@ -11,13 +11,16 @@
       background: #fdfdfd;
       padding: 2rem 1rem;
     }
+
     header {
       text-align: center;
       margin-bottom: 2rem;
     }
+
     header img {
       max-width: 150px;
     }
+
     .container {
       display: flex;
       flex-direction: column;
@@ -25,25 +28,30 @@
       justify-content: center;
       gap: 20px;
     }
+
     .svg-container {
       position: relative;
       width: 100%;
       max-width: 600px;
     }
+
     svg {
       max-width: 100%;
       height: auto;
     }
+
     .interactive-path {
       transition: fill 0.3s ease;
       cursor: pointer;
     }
+
     .prompt-text {
       font-weight: bold;
       text-align: center;
       font-size: 1.1rem;
       margin-bottom: 10px;
     }
+
     .controls {
       padding: 20px;
       background: white;
@@ -52,31 +60,37 @@
       width: 100%;
       max-width: 400px;
     }
+
     h1 {
       font-weight: bold;
       color: #333;
       text-align: center;
     }
+
     label {
       display: block;
       margin-bottom: 1rem;
       font-weight: bold;
       color: #444;
     }
+
     select, input {
       width: 100%;
       padding: 5px;
       margin-top: 5px;
     }
+
     .results {
       background: #f9f9f9;
       padding: 1rem;
       border-radius: 8px;
       margin-top: 1rem;
     }
+
     .results h3 { font-weight: bold; color: #333; }
     .results p { margin: 5px 0; }
     .results strong { color: #222; font-weight: bold; }
+
     .add-on-group { margin-bottom: 1rem; }
     .addon-buttons { display: flex; flex-wrap: wrap; gap: 3px; }
     .addon-button {
@@ -87,12 +101,24 @@
       background: #e0e0e0;
       color: #333;
       font-weight: 500;
+      white-space: nowrap;
     }
+
     .addon-button.selected {
       background: #4CAF50;
       color: white;
       border-color: #388E3C;
     }
+
+    .addon-button:hover {
+      background: #d0d0d0;
+      color: #222;
+    }
+
+    .addon-button.selected:hover {
+      background: #45a049;
+    }
+
     button {
       padding: 8px 16px;
       background: #4CAF50;
@@ -103,6 +129,15 @@
       font-weight: bold;
       width: 100%;
     }
+
+    button:hover { background: #45a049; }
+
+    @media (max-width: 600px) {
+      .controls {
+        width: 100%;
+        max-width: 400px;
+      }
+    }
   </style>
 </head>
 <body>
@@ -112,7 +147,9 @@
 
   <div class="container">
     <div class="prompt-text">Click on the teeth to add to your custom grillz order – unclick to remove.</div>
-    <div class="svg-container" id="svgContainer"></div>
+    <div class="svg-container" id="svgContainer">
+      <!-- SVG will be injected here -->
+    </div>
 
     <div class="controls">
       <h1>Custom Grillz</h1>
@@ -126,7 +163,7 @@
           <option value="solid_gold">Solid Gold (€250)</option>
         </select>
       </label>
-      <div id="toothSelections"></div>
+      <div id="toothSelections" class="tooth-selection"></div>
       <button onclick="updateQuote()">Generate Quote</button>
       <div class="results" id="results" style="display:none;"></div>
     </div>
@@ -158,47 +195,42 @@
     document.addEventListener('DOMContentLoaded', async () => {
       const svgPath = './teeth-map.svg';
       const svgContainer = document.getElementById('svgContainer');
+
       try {
         const res = await fetch(svgPath);
         const svgText = await res.text();
         svgContainer.innerHTML = svgText;
-        prepareSVGForInteraction();
         initToothInteractivity();
       } catch (err) {
         console.error('Failed to load SVG:', err);
+        svgContainer.innerHTML = '<p>Failed to load SVG. Check your file path.</p>';
       }
     });
 
-    function prepareSVGForInteraction() {
-      const svg = document.querySelector('svg');
-      if (!svg) return;
-      const paths = svg.querySelectorAll('path');
+    function initToothInteractivity() {
+      const targetLabels = ['L1', 'L2', 'L3', 'L4', 'L5', 'R1', 'R2', 'R3', 'R4', 'R5'];
+      const paths = document.querySelectorAll('path');
+
       paths.forEach(path => {
         const label = path.getAttribute('inkscape:label');
-        if (label && /^L[1-5]|R[1-5]$/.test(label)) {
+        if (targetLabels.includes(label)) {
           path.classList.add('interactive-path');
-          path.dataset.tooth = label;
           path.setAttribute('fill', 'transparent');
+          path.dataset.tooth = label;
+
+          path.addEventListener('click', () => {
+            const isSelected = path.getAttribute('fill') === '#b0d5ee';
+            path.setAttribute('fill', isSelected ? 'transparent' : '#b0d5ee');
+
+            if (isSelected) {
+              selectedTeeth.delete(label);
+              removeToothControl(label);
+            } else {
+              selectedTeeth.set(label, []);
+              addToothControl(label);
+            }
+          });
         }
-      });
-    }
-
-    function initToothInteractivity() {
-      const paths = document.querySelectorAll('.interactive-path');
-      paths.forEach(path => {
-        path.addEventListener('click', () => {
-          const toothId = path.dataset.tooth;
-          const isSelected = path.getAttribute('fill') === '#b0d5ee';
-          path.setAttribute('fill', isSelected ? 'transparent' : '#b0d5ee');
-
-          if (isSelected) {
-            selectedTeeth.delete(toothId);
-            removeToothControl(toothId);
-          } else {
-            selectedTeeth.set(toothId, []);
-            addToothControl(toothId);
-          }
-        });
       });
     }
 
@@ -245,6 +277,7 @@
       const clientName = document.getElementById('clientName').value || 'Unnamed Client';
       const material = document.getElementById('material').value;
       const toothCount = selectedTeeth.size;
+
       if (toothCount === 0) {
         alert('Please select at least one tooth');
         return;
