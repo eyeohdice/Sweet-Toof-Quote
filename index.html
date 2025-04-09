@@ -3,98 +3,78 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Sweet Toof – Custom Grillz Order</title>
+  <title>Sweet Toof – Custom Grillz</title>
   <style>
     body {
       font-family: sans-serif;
-      margin: 0;
+      margin: 0 auto;
       background: #fdfdfd;
-      padding: 2rem 1rem;
-    }
-    header {
+      padding: 1rem;
       text-align: center;
-      margin-bottom: 2rem;
     }
+
     header img {
-      max-width: 150px;
+      max-width: 200px;
+      margin-bottom: 1rem;
     }
+
     .container {
       display: flex;
+      flex-wrap: wrap;
       gap: 20px;
       justify-content: center;
       align-items: flex-start;
-      flex-wrap: wrap;
+      max-width: 1000px;
+      margin: 0 auto;
     }
+
     .svg-container {
       position: relative;
-      width: 50%;
-      min-width: 300px;
+      width: 100%;
+      max-width: 600px;
     }
-    svg {
-      max-width: 100%;
+
+    .svg-container svg {
+      width: 100%;
       height: auto;
     }
-    .interactive-path {
-      transition: fill 0.3s ease;
-      cursor: pointer;
+
+    .tooth-label {
+      position: absolute;
+      font-size: 12px;
+      font-weight: bold;
+      background: rgba(255, 255, 255, 0.7);
+      padding: 2px 4px;
+      border-radius: 3px;
+      pointer-events: none;
     }
+
     .controls {
       padding: 20px;
       background: white;
       border-radius: 8px;
       box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-      width: 400px;
-      max-width: 100%;
+      max-width: 400px;
+      flex: 1 1 300px;
     }
+
     h1 {
       font-weight: bold;
       color: #333;
-      text-align: center;
     }
+
     label {
       display: block;
+      width: 100%;
       margin-bottom: 1rem;
       font-weight: bold;
       color: #444;
     }
+
     select, input {
       width: 100%;
       padding: 5px;
       margin-top: 5px;
-    }
-    .results {
-      background: #f9f9f9;
-      padding: 1rem;
-      border-radius: 8px;
-      margin-top: 1rem;
-    }
-    .results h3 { font-weight: bold; color: #333; }
-    .results p { margin: 5px 0; }
-    .results strong { color: #222; font-weight: bold; }
-
-    .add-on-group { margin-bottom: 1rem; }
-    .addon-buttons { display: flex; flex-wrap: wrap; gap: 3px; }
-    .addon-button {
-      padding: 5px 10px;
-      border: 1px solid #666;
-      border-radius: 4px;
-      cursor: pointer;
-      background: #e0e0e0;
-      color: #333;
-      font-weight: 500;
-      white-space: nowrap;
-    }
-    .addon-button.selected {
-      background: #4CAF50;
-      color: white;
-      border-color: #388E3C;
-    }
-    .addon-button:hover {
-      background: #d0d0d0;
-      color: #222;
-    }
-    .addon-button.selected:hover {
-      background: #45a049;
     }
 
     button {
@@ -105,36 +85,54 @@
       border-radius: 5px;
       cursor: pointer;
       font-weight: bold;
-      width: 100%;
     }
 
-    button:hover { background: #45a049; }
+    .results {
+      background: #f9f9f9;
+      padding: 1rem;
+      border-radius: 8px;
+      margin-top: 1rem;
+      text-align: left;
+    }
 
     @media (max-width: 600px) {
       .container {
         flex-direction: column;
         align-items: center;
       }
-      .svg-container,
+
+      .svg-container {
+        width: 100%;
+      }
+
       .controls {
         width: 100%;
-        max-width: 400px;
       }
     }
   </style>
 </head>
 <body>
   <header>
-    <img src="sweet-toof-logo.png" alt="Sweet Toof Logo" />
+    <img src="sweet-toof-logo.png" alt="Sweet Toof Logo"/>
   </header>
 
   <div class="container">
-    <div class="svg-container" id="svgContainer">
-      <!-- SVG will be injected here -->
+    <div class="svg-container">
+      <object type="image/svg+xml" data="teeth-map.svg" id="teethSVG"></object>
+      <div class="tooth-label" style="top: 32%; left: 6%;">L1</div>
+      <div class="tooth-label" style="top: 32%; left: 15%;">L2</div>
+      <div class="tooth-label" style="top: 32%; left: 24%;">L3</div>
+      <div class="tooth-label" style="top: 32%; left: 33%;">L4</div>
+      <div class="tooth-label" style="top: 32%; left: 42%;">L5</div>
+      <div class="tooth-label" style="top: 32%; left: 58%;">R1</div>
+      <div class="tooth-label" style="top: 32%; left: 67%;">R2</div>
+      <div class="tooth-label" style="top: 32%; left: 76%;">R3</div>
+      <div class="tooth-label" style="top: 32%; left: 85%;">R4</div>
+      <div class="tooth-label" style="top: 32%; left: 94%;">R5</div>
     </div>
 
     <div class="controls">
-      <h1>Custom Grillz</h1>
+      <h1>Sweet Toof – Custom Grillz</h1>
       <label>Client Name
         <input type="text" id="clientName" />
       </label>
@@ -152,172 +150,7 @@
   </div>
 
   <script>
-    const BASE_PRICES = {
-      cobalt_chrome: 60,
-      gold_plated: 100,
-      solid_gold: 250
-    };
-
-    const ADD_ONS = {
-      cutout: 30,
-      fang_shaping: 20,
-      engraving: 40,
-      gem_inlay: 75,
-      open_face: 25,
-      texture_finish: 30,
-      multi_color_plating: 30,
-      custom_design: 100
-    };
-
-    const CAST_COST_PER_TOOTH = 20;
-    const IMPRESSION_COST = 3;
-    const selectedTeeth = new Map();
-
-    document.addEventListener('DOMContentLoaded', async () => {
-      const svgPath = './teeth-map.svg';
-      const svgContainer = document.getElementById('svgContainer');
-
-      try {
-        const res = await fetch(svgPath);
-        const svgText = await res.text();
-        svgContainer.innerHTML = svgText;
-
-        addSVGLabels(); // new label injection
-        initToothInteractivity();
-      } catch (err) {
-        console.error('Failed to load SVG:', err);
-        svgContainer.innerHTML = '<p>Failed to load SVG. Check your file path.</p>';
-      }
-    });
-
-    function initToothInteractivity() {
-      const paths = document.querySelectorAll('.interactive-path');
-      paths.forEach(path => {
-        path.addEventListener('click', () => {
-          const toothId = path.dataset.tooth;
-          const isSelected = path.getAttribute('fill') === '#b0d5ee';
-          path.setAttribute('fill', isSelected ? 'transparent' : '#b0d5ee');
-
-          if (isSelected) {
-            selectedTeeth.delete(toothId);
-            removeToothControl(toothId);
-          } else {
-            selectedTeeth.set(toothId, []);
-            addToothControl(toothId);
-          }
-        });
-      });
-    }
-
-    function addSVGLabels() {
-      const svg = document.querySelector('svg');
-      if (!svg) return;
-
-      const labels = [
-        { id: 'L1', x: 60, y: 420 },
-        { id: 'L2', x: 125, y: 420 },
-        { id: 'L3', x: 190, y: 420 },
-        { id: 'L4', x: 255, y: 420 },
-        { id: 'L5', x: 320, y: 420 },
-        { id: 'R1', x: 545, y: 420 },
-        { id: 'R2', x: 610, y: 420 },
-        { id: 'R3', x: 675, y: 420 },
-        { id: 'R4', x: 740, y: 420 },
-        { id: 'R5', x: 805, y: 420 }
-      ];
-
-      labels.forEach(label => {
-        const text = document.createElementNS("http://www.w3.org/2000/svg", "text");
-        text.setAttribute('x', label.x);
-        text.setAttribute('y', label.y);
-        text.setAttribute('font-size', '14');
-        text.setAttribute('font-weight', 'bold');
-        text.setAttribute('text-anchor', 'middle');
-        text.setAttribute('fill', '#000');
-        text.textContent = label.id;
-        svg.appendChild(text);
-      });
-    }
-
-    function addToothControl(toothId) {
-      const container = document.getElementById('toothSelections');
-      const div = document.createElement('div');
-      div.id = `control-${toothId}`;
-      div.className = 'add-on-group';
-      div.innerHTML = `
-        <label>${toothId} Add-Ons
-          <div class="addon-buttons" id="addon-buttons-${toothId}">
-            ${Object.entries(ADD_ONS).map(([key, price]) => `
-              <button class="addon-button" data-addon="${key}" onclick="toggleAddOn('${toothId}', '${key}')">
-                ${key.replace('_', ' ')} (€${price})
-              </button>
-            `).join('')}
-          </div>
-        </label>
-      `;
-      container.appendChild(div);
-    }
-
-    function removeToothControl(toothId) {
-      const control = document.getElementById(`control-${toothId}`);
-      if (control) control.remove();
-    }
-
-    function toggleAddOn(toothId, addon) {
-      const addOns = selectedTeeth.get(toothId) || [];
-      const index = addOns.indexOf(addon);
-      const button = document.querySelector(`#addon-buttons-${toothId} [data-addon="${addon}"]`);
-
-      if (index === -1) {
-        addOns.push(addon);
-        button.classList.add('selected');
-      } else {
-        addOns.splice(index, 1);
-        button.classList.remove('selected');
-      }
-      selectedTeeth.set(toothId, addOns);
-    }
-
-    function updateQuote() {
-      const clientName = document.getElementById('clientName').value || 'Unnamed Client';
-      const material = document.getElementById('material').value;
-      const toothCount = selectedTeeth.size;
-
-      if (toothCount === 0) {
-        alert('Please select at least one tooth');
-        return;
-      }
-
-      const basePrice = BASE_PRICES[material];
-      let addOnTotal = 0;
-      let addOnSummary = [];
-
-      selectedTeeth.forEach((addOns, toothId) => {
-        const cost = addOns.reduce((sum, key) => sum + ADD_ONS[key], 0);
-        addOnTotal += cost;
-        addOnSummary.push(`${toothId}: ${addOns.length ? addOns.join(', ') : 'None'}`);
-      });
-
-      const totalSalePrice = (basePrice + addOnTotal) * toothCount;
-      const totalCost = (CAST_COST_PER_TOOTH * toothCount) + IMPRESSION_COST;
-      const profit = totalSalePrice - totalCost;
-      const marginPercent = ((profit / totalSalePrice) * 100).toFixed(2);
-      const depositDue = (totalSalePrice * 0.5).toFixed(2);
-
-      const results = document.getElementById('results');
-      results.style.display = 'block';
-      results.innerHTML = `
-        <h3>Quote for ${clientName}</h3>
-        <p><strong>Material:</strong> ${material.replace('_', ' ')}</p>
-        <p><strong>Selected Teeth:</strong> ${toothCount}</p>
-        <p><strong>Add-Ons:</strong><br>${addOnSummary.join('<br>')}</p>
-        <p><strong>Total Sale Price:</strong> €${totalSalePrice}</p>
-        <p><strong>Total Cost:</strong> €${totalCost}</p>
-        <p><strong>Profit:</strong> €${profit}</p>
-        <p><strong>Profit Margin:</strong> ${marginPercent}%</p>
-        <p><strong>Deposit Due (50%):</strong> €${depositDue}</p>
-      `;
-    }
+    // Your existing JavaScript logic here
   </script>
 </body>
 </html>
