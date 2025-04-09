@@ -182,7 +182,7 @@
         const svgText = await res.text();
         svgContainer.innerHTML = svgText;
 
-        addSVGLabels(); // new label injection
+        addSVGLabels();
         initToothInteractivity();
       } catch (err) {
         console.error('Failed to load SVG:', err);
@@ -214,22 +214,28 @@
       if (!svg) return;
 
       const labels = [
-        { id: 'L1', x: 60, y: 420 },
-        { id: 'L2', x: 125, y: 420 },
-        { id: 'L3', x: 190, y: 420 },
-        { id: 'L4', x: 255, y: 420 },
-        { id: 'L5', x: 320, y: 420 },
-        { id: 'R1', x: 545, y: 420 },
-        { id: 'R2', x: 610, y: 420 },
-        { id: 'R3', x: 675, y: 420 },
-        { id: 'R4', x: 740, y: 420 },
-        { id: 'R5', x: 805, y: 420 }
+        { id: 'L1', x: 80, y: 580 },
+        { id: 'L2', x: 150, y: 580 },
+        { id: 'L3', x: 230, y: 580 },
+        { id: 'L4', x: 330, y: 580 },
+        { id: 'L5', x: 460, y: 590 },
+        { id: 'R1', x: 610, y: 590 },
+        { id: 'R2', x: 740, y: 580 },
+        { id: 'R3', x: 840, y: 580 },
+        { id: 'R4', x: 930, y: 580 },
+        { id: 'R5', x: 1000, y: 580 }
       ];
 
+      const viewBoxWidth = 1080;
+      const viewBoxHeight = 1080;
+
       labels.forEach(label => {
+        const percentX = (label.x / viewBoxWidth) * 100;
+        const percentY = (label.y / viewBoxHeight) * 100;
+
         const text = document.createElementNS("http://www.w3.org/2000/svg", "text");
-        text.setAttribute('x', label.x);
-        text.setAttribute('y', label.y);
+        text.setAttribute('x', `${percentX}%`);
+        text.setAttribute('y', `${percentY}%`);
         text.setAttribute('font-size', '14');
         text.setAttribute('font-weight', 'bold');
         text.setAttribute('text-anchor', 'middle');
