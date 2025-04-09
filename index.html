@@ -140,45 +140,16 @@
     }
   </style>
 </head>
-  <!-- Lock Icon -->
-<div id="lockIcon" style="
-  position: fixed;
-  bottom: 20px;
-  right: 20px;
-  background: #fff;
-  border: 2px solid #999;
-  border-radius: 50%;
-  width: 40px;
-  height: 40px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  cursor: pointer;
-  z-index: 9999;
-  box-shadow: 0 2px 4px rgba(0,0,0,0.2);
-  font-size: 18px;
-  font-weight: bold;
-  user-select: none;
-">
-  🔒
-</div>
 <body>
   <header>
     <img src="sweet-toof-logo.png" alt="Sweet Toof Logo" />
   </header>
-
   <div class="container">
     <div class="prompt-text">Click on the teeth to add to your custom grillz order – unclick to remove.</div>
-
-    <div class="svg-container" id="svgContainer">
-      <!-- SVG will be injected here -->
-    </div>
-
+    <div class="svg-container" id="svgContainer"></div>
     <div class="controls">
       <h1>Custom Grillz</h1>
-      <label>Client Name
-        <input type="text" id="clientName" />
-      </label>
+      <label>Client Name<input type="text" id="clientName" /></label>
       <label>Material
         <select id="material">
           <option value="cobalt_chrome">Cobalt Chrome (€60)</option>
@@ -191,52 +162,24 @@
       <div class="results" id="results" style="display:none;"></div>
     </div>
   </div>
-
   <script>
-    const BASE_PRICES = {
-      cobalt_chrome: 60,
-      gold_plated: 100,
-      solid_gold: 250
-    };
-
-   const ADD_ONS = {
-    plain_solid: 0,
-    cutout: 30,
-    fang_shaping: 20,
-    engraving: 40,
-    gem_inlay: 75,
-    open_face: 25,
-    texture_finish: 30,
-    multi_color_plating: 30,
-    custom_design: 100
-};
-
-    const CAST_COST_PER_TOOTH = 20;
-    const IMPRESSION_COST = 3;
-    const selectedTeeth = new Map();
-
-    document.addEventListener('DOMContentLoaded', async () => {
-      const svgPath = './teeth-map.svg';
-      const svgContainer = document.getElementById('svgContainer');
-
-      try {
-        const res = await fetch(svgPath);
-        const svgText = await res.text();
-        svgContainer.innerHTML = svgText;
-
-        addSVGLabels();
-        initToothInteractivity();
-      } catch (err) {
-        console.error('Failed to load SVG:', err);
-        svgContainer.innerHTML = '<p>Failed to load SVG. Check your file path.</p>';
-      }
-    });
-
     function initToothInteractivity() {
-      const paths = document.querySelectorAll('.interactive-path');
-      paths.forEach(path => {
+      const svg = document.querySelector('svg');
+      if (!svg) return;
+
+      const validLabels = ['L1','L2','L3','L4','L5','R1','R2','R3','R4','R5'];
+      const allPaths = svg.querySelectorAll('path');
+
+      allPaths.forEach(path => {
+        const label = path.getAttribute('inkscape:label');
+        if (!label || !validLabels.includes(label)) return;
+
+        path.style.cursor = 'pointer';
+        path.setAttribute('data-tooth', label);
+        path.classList.add('interactive-path');
+
         path.addEventListener('click', () => {
-          const toothId = path.dataset.tooth;
+          const toothId = label;
           const isSelected = path.getAttribute('fill') === '#b0d5ee';
           path.setAttribute('fill', isSelected ? 'transparent' : '#b0d5ee');
 
@@ -250,203 +193,6 @@
         });
       });
     }
-
-    function addSVGLabels() {
-      const svg = document.querySelector('svg');
-      if (!svg) return;
-
-      const labels = [
-        { id: 'L1', x: 80, y: 580 },
-        { id: 'L2', x: 150, y: 580 },
-        { id: 'L3', x: 230, y: 580 },
-        { id: 'L4', x: 330, y: 580 },
-        { id: 'L5', x: 460, y: 590 },
-        { id: 'R1', x: 610, y: 590 },
-        { id: 'R2', x: 740, y: 580 },
-        { id: 'R3', x: 840, y: 580 },
-        { id: 'R4', x: 930, y: 580 },
-        { id: 'R5', x: 1000, y: 580 }
-      ];
-
-      const viewBoxWidth = 1080;
-      const viewBoxHeight = 500;
-
-      labels.forEach(label => {
-        const percentX = (label.x / viewBoxWidth) * 100;
-        const percentY = (label.y / viewBoxHeight) * 100;
-
-        const text = document.createElementNS("http://www.w3.org/2000/svg", "text");
-        text.setAttribute('x', `${percentX}%`);
-        text.setAttribute('y', `${percentY}%`);
-        text.setAttribute('font-size', '16');
-        text.setAttribute('font-weight', 'bold');
-        text.setAttribute('text-anchor', 'middle');
-        text.setAttribute('fill', '#000');
-        text.textContent = label.id;
-        svg.appendChild(text);
-      });
-    }
-
-    function addToothControl(toothId) {
-      const container = document.getElementById('toothSelections');
-      const div = document.createElement('div');
-      div.id = `control-${toothId}`;
-      div.className = 'add-on-group';
-      div.innerHTML = `
-        <label>${toothId} Add-Ons
-          <div class="addon-buttons" id="addon-buttons-${toothId}">
-            ${Object.entries(ADD_ONS).map(([key, price]) => `
-              <button class="addon-button" data-addon="${key}" onclick="toggleAddOn('${toothId}', '${key}')">
-                ${key.replace('_', ' ')} (€${price})
-              </button>
-            `).join('')}
-          </div>
-        </label>
-      `;
-      container.appendChild(div);
-    }
-
-    function removeToothControl(toothId) {
-      const control = document.getElementById(`control-${toothId}`);
-      if (control) control.remove();
-    }
-
-    function toggleAddOn(toothId, addon) {
-      const addOns = selectedTeeth.get(toothId) || [];
-      const index = addOns.indexOf(addon);
-      const button = document.querySelector(`#addon-buttons-${toothId} [data-addon="${addon}"]`);
-
-      if (index === -1) {
-        addOns.push(addon);
-        button.classList.add('selected');
-      } else {
-        addOns.splice(index, 1);
-        button.classList.remove('selected');
-      }
-      selectedTeeth.set(toothId, addOns);
-    }
-
-    function updateQuote() {
-      const clientName = document.getElementById('clientName').value || 'Unnamed Client';
-      const material = document.getElementById('material').value;
-      const toothCount = selectedTeeth.size;
-
-    
-      const basePrice = BASE_PRICES[material];
-      let addOnTotal = 0;
-      let addOnSummary = [];
-
-      selectedTeeth.forEach((addOns, toothId) => {
-        const cost = addOns.reduce((sum, key) => sum + ADD_ONS[key], 0);
-        addOnTotal += cost;
-        addOnSummary.push(`${toothId}: ${addOns.length ? addOns.join(', ') : 'None'}`);
-      });
-
-      const totalSalePrice = (basePrice + addOnTotal) * toothCount;
-      const totalCost = (CAST_COST_PER_TOOTH * toothCount) + IMPRESSION_COST;
-      const profit = totalSalePrice - totalCost;
-      const marginPercent = ((profit / totalSalePrice) * 100).toFixed(2);
-      const depositDue = (totalSalePrice * 0.5).toFixed(2);
-
-      const results = document.getElementById('results');
-      results.style.display = 'block';
-      results.innerHTML = `
-        <h3>Quote for ${clientName}</h3>
-        <p><strong>Material:</strong> ${material.replace('_', ' ')}</p>
-        <p><strong>Selected Teeth:</strong> ${toothCount}</p>
-        <p><strong>Add-Ons:</strong><br>${addOnSummary.join('<br>')}</p>
-        <p><strong>Total Sale Price:</strong> €${totalSalePrice}</p>
-        <p><strong>Total Cost:</strong> €${totalCost}</p>
-        <p><strong>Profit:</strong> €${profit}</p>
-        <p><strong>Profit Margin:</strong> ${marginPercent}%</p>
-        <p><strong>Deposit Due (50%):</strong> €${depositDue}</p>
-      `;
-    }
   </script>
-
-  <script>
-  const LOCKED_FIELDS = ['Total Cost', 'Profit', 'Profit Margin', 'Deposit Due'];
-  const PASSWORD_HASH = '4d9c1535e7b3f07d527bde7a0209d98db6129fd22a74982657a3f107e5cd09dc'; // SHA256 of IODICE25
-  let isUnlocked = false;
-
-  const lockIcon = document.getElementById('lockIcon');
-
-  lockIcon.addEventListener('click', async () => {
-    if (!isUnlocked) {
-      const userInput = prompt("Enter admin password to unlock sensitive info:");
-      if (!userInput) return;
-
-      const hashBuffer = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(userInput));
-      const hashArray = Array.from(new Uint8Array(hashBuffer));
-      const hashHex = hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
-
-      if (hashHex === PASSWORD_HASH) {
-        isUnlocked = true;
-        lockIcon.textContent = '🔓';
-        updateQuote();
-      } else {
-        alert("Incorrect password.");
-      }
-    } else {
-      // Lock it again
-      isUnlocked = false;
-      lockIcon.textContent = '🔒';
-      updateQuote();
-    }
-  });
-
-  // Modified updateQuote() function
-  const originalUpdateQuote = updateQuote;
-  updateQuote = function () {
-    const clientName = document.getElementById('clientName').value || 'Unnamed Client';
-    const material = document.getElementById('material').value;
-    const toothCount = selectedTeeth.size;
-
-    if (toothCount === 0) {
-      alert('Please select at least one tooth');
-      return;
-    }
-
-    const basePrice = BASE_PRICES[material];
-    let addOnTotal = 0;
-    let addOnSummary = [];
-
-    selectedTeeth.forEach((addOns, toothId) => {
-      const cost = addOns.reduce((sum, key) => sum + ADD_ONS[key], 0);
-      addOnTotal += cost;
-      addOnSummary.push(`${toothId}: ${addOns.length ? addOns.join(', ') : 'None'}`);
-    });
-
-    const totalSalePrice = (basePrice + addOnTotal) * toothCount;
-    const totalCost = (CAST_COST_PER_TOOTH * toothCount) + IMPRESSION_COST;
-    const profit = totalSalePrice - totalCost;
-    const marginPercent = ((profit / totalSalePrice) * 100).toFixed(2);
-    const depositDue = (totalSalePrice * 0.5).toFixed(2);
-
-    const results = document.getElementById('results');
-    results.style.display = 'block';
-
-    let html = `
-      <h3>Quote for ${clientName}</h3>
-      <p><strong>Material:</strong> ${material.replace('_', ' ')}</p>
-      <p><strong>Selected Teeth:</strong> ${toothCount}</p>
-      <p><strong>Add-Ons:</strong><br>${addOnSummary.join('<br>')}</p>
-      <p><strong>Total Sale Price:</strong> €${totalSalePrice}</p>
-    `;
-
-    if (isUnlocked) {
-      html += `
-        <p><strong>Total Cost:</strong> €${totalCost}</p>
-        <p><strong>Profit:</strong> €${profit}</p>
-        <p><strong>Profit Margin:</strong> ${marginPercent}%</p>
-        <p><strong>Deposit Due (50%):</strong> €${depositDue}</p>
-      `;
-    }
-
-    results.innerHTML = html;
-  };
-</script>
-
-  
 </body>
 </html>
