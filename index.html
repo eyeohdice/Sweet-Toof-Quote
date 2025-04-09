@@ -11,16 +11,13 @@
       background: #fdfdfd;
       padding: 2rem 1rem;
     }
-
     header {
       text-align: center;
       margin-bottom: 2rem;
     }
-
     header img {
       max-width: 150px;
     }
-
     .container {
       display: flex;
       flex-direction: column;
@@ -28,30 +25,25 @@
       justify-content: center;
       gap: 20px;
     }
-
     .svg-container {
       position: relative;
       width: 100%;
       max-width: 600px;
     }
-
     svg {
       max-width: 100%;
       height: auto;
     }
-
     .interactive-path {
       transition: fill 0.3s ease;
       cursor: pointer;
     }
-
     .prompt-text {
       font-weight: bold;
       text-align: center;
       font-size: 1.1rem;
       margin-bottom: 10px;
     }
-
     .controls {
       padding: 20px;
       background: white;
@@ -60,37 +52,31 @@
       width: 100%;
       max-width: 400px;
     }
-
     h1 {
       font-weight: bold;
       color: #333;
       text-align: center;
     }
-
     label {
       display: block;
       margin-bottom: 1rem;
       font-weight: bold;
       color: #444;
     }
-
     select, input {
       width: 100%;
       padding: 5px;
       margin-top: 5px;
     }
-
     .results {
       background: #f9f9f9;
       padding: 1rem;
       border-radius: 8px;
       margin-top: 1rem;
     }
-
     .results h3 { font-weight: bold; color: #333; }
     .results p { margin: 5px 0; }
     .results strong { color: #222; font-weight: bold; }
-
     .add-on-group { margin-bottom: 1rem; }
     .addon-buttons { display: flex; flex-wrap: wrap; gap: 3px; }
     .addon-button {
@@ -101,24 +87,12 @@
       background: #e0e0e0;
       color: #333;
       font-weight: 500;
-      white-space: nowrap;
     }
-
     .addon-button.selected {
       background: #4CAF50;
       color: white;
       border-color: #388E3C;
     }
-
-    .addon-button:hover {
-      background: #d0d0d0;
-      color: #222;
-    }
-
-    .addon-button.selected:hover {
-      background: #45a049;
-    }
-
     button {
       padding: 8px 16px;
       background: #4CAF50;
@@ -129,27 +103,22 @@
       font-weight: bold;
       width: 100%;
     }
-
-    button:hover { background: #45a049; }
-
-    @media (max-width: 600px) {
-      .controls {
-        width: 100%;
-        max-width: 400px;
-      }
-    }
   </style>
 </head>
 <body>
   <header>
     <img src="sweet-toof-logo.png" alt="Sweet Toof Logo" />
   </header>
+
   <div class="container">
     <div class="prompt-text">Click on the teeth to add to your custom grillz order – unclick to remove.</div>
     <div class="svg-container" id="svgContainer"></div>
+
     <div class="controls">
       <h1>Custom Grillz</h1>
-      <label>Client Name<input type="text" id="clientName" /></label>
+      <label>Client Name
+        <input type="text" id="clientName" />
+      </label>
       <label>Material
         <select id="material">
           <option value="cobalt_chrome">Cobalt Chrome (€60)</option>
@@ -157,29 +126,68 @@
           <option value="solid_gold">Solid Gold (€250)</option>
         </select>
       </label>
-      <div id="toothSelections" class="tooth-selection"></div>
+      <div id="toothSelections"></div>
       <button onclick="updateQuote()">Generate Quote</button>
       <div class="results" id="results" style="display:none;"></div>
     </div>
   </div>
+
   <script>
-    function initToothInteractivity() {
+    const BASE_PRICES = {
+      cobalt_chrome: 60,
+      gold_plated: 100,
+      solid_gold: 250
+    };
+
+    const ADD_ONS = {
+      plain_solid: 0,
+      cutout: 30,
+      fang_shaping: 20,
+      engraving: 40,
+      gem_inlay: 75,
+      open_face: 25,
+      texture_finish: 30,
+      multi_color_plating: 30,
+      custom_design: 100
+    };
+
+    const CAST_COST_PER_TOOTH = 20;
+    const IMPRESSION_COST = 3;
+    const selectedTeeth = new Map();
+
+    document.addEventListener('DOMContentLoaded', async () => {
+      const svgPath = './teeth-map.svg';
+      const svgContainer = document.getElementById('svgContainer');
+      try {
+        const res = await fetch(svgPath);
+        const svgText = await res.text();
+        svgContainer.innerHTML = svgText;
+        prepareSVGForInteraction();
+        initToothInteractivity();
+      } catch (err) {
+        console.error('Failed to load SVG:', err);
+      }
+    });
+
+    function prepareSVGForInteraction() {
       const svg = document.querySelector('svg');
       if (!svg) return;
-
-      const validLabels = ['L1','L2','L3','L4','L5','R1','R2','R3','R4','R5'];
-      const allPaths = svg.querySelectorAll('path');
-
-      allPaths.forEach(path => {
+      const paths = svg.querySelectorAll('path');
+      paths.forEach(path => {
         const label = path.getAttribute('inkscape:label');
-        if (!label || !validLabels.includes(label)) return;
+        if (label && /^L[1-5]|R[1-5]$/.test(label)) {
+          path.classList.add('interactive-path');
+          path.dataset.tooth = label;
+          path.setAttribute('fill', 'transparent');
+        }
+      });
+    }
 
-        path.style.cursor = 'pointer';
-        path.setAttribute('data-tooth', label);
-        path.classList.add('interactive-path');
-
+    function initToothInteractivity() {
+      const paths = document.querySelectorAll('.interactive-path');
+      paths.forEach(path => {
         path.addEventListener('click', () => {
-          const toothId = label;
+          const toothId = path.dataset.tooth;
           const isSelected = path.getAttribute('fill') === '#b0d5ee';
           path.setAttribute('fill', isSelected ? 'transparent' : '#b0d5ee');
 
@@ -192,6 +200,85 @@
           }
         });
       });
+    }
+
+    function addToothControl(toothId) {
+      const container = document.getElementById('toothSelections');
+      const div = document.createElement('div');
+      div.id = `control-${toothId}`;
+      div.className = 'add-on-group';
+      div.innerHTML = `
+        <label>${toothId} Add-Ons
+          <div class="addon-buttons" id="addon-buttons-${toothId}">
+            ${Object.entries(ADD_ONS).map(([key, price]) => `
+              <button class="addon-button" data-addon="${key}" onclick="toggleAddOn('${toothId}', '${key}')">
+                ${key.replace('_', ' ')} (€${price})
+              </button>
+            `).join('')}
+          </div>
+        </label>
+      `;
+      container.appendChild(div);
+    }
+
+    function removeToothControl(toothId) {
+      const control = document.getElementById(`control-${toothId}`);
+      if (control) control.remove();
+    }
+
+    function toggleAddOn(toothId, addon) {
+      const addOns = selectedTeeth.get(toothId) || [];
+      const index = addOns.indexOf(addon);
+      const button = document.querySelector(`#addon-buttons-${toothId} [data-addon="${addon}"]`);
+
+      if (index === -1) {
+        addOns.push(addon);
+        button.classList.add('selected');
+      } else {
+        addOns.splice(index, 1);
+        button.classList.remove('selected');
+      }
+      selectedTeeth.set(toothId, addOns);
+    }
+
+    function updateQuote() {
+      const clientName = document.getElementById('clientName').value || 'Unnamed Client';
+      const material = document.getElementById('material').value;
+      const toothCount = selectedTeeth.size;
+      if (toothCount === 0) {
+        alert('Please select at least one tooth');
+        return;
+      }
+
+      const basePrice = BASE_PRICES[material];
+      let addOnTotal = 0;
+      let addOnSummary = [];
+
+      selectedTeeth.forEach((addOns, toothId) => {
+        const cost = addOns.reduce((sum, key) => sum + ADD_ONS[key], 0);
+        addOnTotal += cost;
+        addOnSummary.push(`${toothId}: ${addOns.length ? addOns.join(', ') : 'None'}`);
+      });
+
+      const totalSalePrice = (basePrice + addOnTotal) * toothCount;
+      const totalCost = (CAST_COST_PER_TOOTH * toothCount) + IMPRESSION_COST;
+      const profit = totalSalePrice - totalCost;
+      const marginPercent = ((profit / totalSalePrice) * 100).toFixed(2);
+      const depositDue = (totalSalePrice * 0.5).toFixed(2);
+
+      const results = document.getElementById('results');
+      results.style.display = 'block';
+      results.innerHTML = `
+        <h3>Quote for ${clientName}</h3>
+        <p><strong>Material:</strong> ${material.replace('_', ' ')}</p>
+        <p><strong>Selected Teeth:</strong> ${toothCount}</p>
+        <p><strong>Add-Ons:</strong><br>${addOnSummary.join('<br>')}</p>
+        <p><strong>Total Sale Price:</strong> €${totalSalePrice}</p>
+        <p><strong>Total Cost:</strong> €${totalCost}</p>
+        <p><strong>Profit:</strong> €${profit}</p>
+        <p><strong>Profit Margin:</strong> ${marginPercent}%</p>
+        <p><strong>Deposit Due (50%):</strong> €${depositDue}</p>
+      `;
     }
   </script>
 </body>
