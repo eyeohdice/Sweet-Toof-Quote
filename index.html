@@ -214,6 +214,13 @@
       custom_design: 100
     };
 
+    const MATERIAL_FILL_COLORS = {
+      cobalt_chrome: '#d8d8d8',
+      gold_plated: '#ffd700',
+      solid_gold: '#ffcc00'
+    };
+
+    let currentFillColor = MATERIAL_FILL_COLORS['cobalt_chrome'];
     const CAST_COST_PER_TOOTH = 20;
     const IMPRESSION_COST = 3;
     const selectedTeeth = new Map();
@@ -233,6 +240,21 @@
       }
     });
 
+    document.getElementById('material').addEventListener('change', e => {
+      const selected = e.target.value;
+      currentFillColor = MATERIAL_FILL_COLORS[selected];
+      updateSelectedToothFills();
+    });
+
+    function updateSelectedToothFills() {
+      document.querySelectorAll('.interactive-path').forEach(path => {
+        const toothId = path.dataset.tooth;
+        if (selectedTeeth.has(toothId)) {
+          path.setAttribute('fill', currentFillColor);
+        }
+      });
+    }
+
     document.getElementById('generateQuoteBtn').addEventListener('click', updateQuote);
 
     function askPassword() {
@@ -248,8 +270,8 @@
       document.querySelectorAll('.interactive-path').forEach(path => {
         path.addEventListener('click', () => {
           const toothId = path.dataset.tooth;
-          const isSelected = path.getAttribute('fill') === '#b0d5ee';
-          path.setAttribute('fill', isSelected ? 'transparent' : '#b0d5ee');
+          const isSelected = selectedTeeth.has(toothId);
+          path.setAttribute('fill', isSelected ? 'transparent' : currentFillColor);
 
           if (isSelected) {
             selectedTeeth.delete(toothId);
@@ -371,10 +393,10 @@ Client: ${clientName}
 Material: ${material.replace('_', ' ')}
 Teeth Selected: ${toothCount}
 Add-Ons:
-${addOnSummary.join('\n')}
+${addOnSummary.join('
+')}
 Total Price: €${totalSalePrice}
 Deposit Due (50%): €${depositDue}
-
 `;
 
       window.lastQuoteText = quoteText;
@@ -384,7 +406,8 @@ Deposit Due (50%): €${depositDue}
     document.getElementById('copyQuoteBtn').addEventListener('click', () => {
       if (!window.lastQuoteText) return alert("No quote available to copy yet.");
       navigator.clipboard.writeText(window.lastQuoteText)
-        .then(() => alert('Quote copied to clipboard!\nSend this to @Sweet.Toof.cy on Instagram by clicking the logo at the top of the page.'))
+        .then(() => alert('Quote copied to clipboard!
+Send this to @Sweet.Toof.cy on Instagram by clicking the logo at the top of the page.'))
         .catch(err => {
           console.error('Copy failed:', err);
           alert('Failed to copy the quote.');
