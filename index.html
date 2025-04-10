@@ -375,6 +375,7 @@ ${addOnSummary.join('\n')}
 Total Price: €${totalSalePrice}
 Deposit Due (50%): €${depositDue}
 
+Send this to @Sweet.Toof.cy on Instagram or email to confirm your order.
 `;
 
       window.lastQuoteText = quoteText;
@@ -384,8 +385,7 @@ Deposit Due (50%): €${depositDue}
     document.getElementById('copyQuoteBtn').addEventListener('click', () => {
       if (!window.lastQuoteText) return alert("No quote available to copy yet.");
       navigator.clipboard.writeText(window.lastQuoteText)
-        .then(() => alert('Quote copied to clipboard! You can now paste it into Instagram, email, or wherever you like. 
-                          You can find us easily on instagram by clicking the logo at the top of the page or @Sweet.Toof.cy on Instagram.'))
+        .then(() => alert('Quote copied to clipboard!\nSend this to @Sweet.Toof.cy on Instagram by clicking the logo at the top of the page.'))
         .catch(err => {
           console.error('Copy failed:', err);
           alert('Failed to copy the quote.');
