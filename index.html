@@ -191,6 +191,7 @@
       <div id="toothSelections"></div>
       <button id="generateQuoteBtn">Generate Quote</button>
       <div class="results" id="results" style="display:none;"></div>
+      <button id="copyQuoteBtn" style="margin-top: 10px; display: none;">📋 Copy My Quote</button>
     </div>
   </div>
 
@@ -343,10 +344,14 @@
       const marginPercent = ((profit / totalSalePrice) * 100).toFixed(2);
       const depositDue = (totalSalePrice * 0.5).toFixed(2);
 
+      const timestamp = new Date().toISOString().replace(/[-:.TZ]/g, '').slice(0, 14);
+      const uniqueId = `${clientName.replace(/\s+/g, '').toUpperCase()}-${timestamp}`;
+
       const results = document.getElementById('results');
       results.style.display = 'block';
       results.innerHTML = `
         <h3>Quote for ${clientName}</h3>
+        <p><strong>Quote ID:</strong> ${uniqueId}</p>
         <p><strong>Material:</strong> ${material.replace('_', ' ')}</p>
         <p><strong>Selected Teeth:</strong> ${toothCount}</p>
         <p><strong>Add-Ons:</strong><br>${addOnSummary.join('<br>')}</p>
@@ -358,7 +363,34 @@
           <p><strong>Deposit Due (50%):</strong> €${depositDue}</p>
         </div>
       `;
+
+      const quoteText = `
+Sweet Toof – Custom Grillz Quote
+Quote ID: ${uniqueId}
+Client: ${clientName}
+Material: ${material.replace('_', ' ')}
+Teeth Selected: ${toothCount}
+Add-Ons:
+${addOnSummary.join('\n')}
+Total Price: €${totalSalePrice}
+Deposit Due (50%): €${depositDue}
+
+Send this to @Sweet.Toof.cy on Instagram or email to confirm your order.
+`;
+
+      window.lastQuoteText = quoteText;
+      document.getElementById('copyQuoteBtn').style.display = 'block';
     }
+
+    document.getElementById('copyQuoteBtn').addEventListener('click', () => {
+      if (!window.lastQuoteText) return alert("No quote available to copy yet.");
+      navigator.clipboard.writeText(window.lastQuoteText)
+        .then(() => alert('Quote copied to clipboard! You can now paste it into Instagram, email, or wherever you like.'))
+        .catch(err => {
+          console.error('Copy failed:', err);
+          alert('Failed to copy the quote.');
+        });
+    });
   </script>
 </body>
 </html>
