@@ -18,22 +18,19 @@
     }
 
     header img {
-      width: 100%;
-      max-width: 250px;
-      height: auto;
-      cursor: pointer;
-    }
+  width: 100%;
+  max-width: 250px;
+  height: auto;
+}
 
     .container {
       display: flex;
       flex-direction: column;
       align-items: center;
-      justify-content: center;
       gap: 20px;
     }
 
     .svg-container {
-      position: relative;
       width: 100%;
       max-width: 600px;
     }
@@ -52,7 +49,6 @@
       font-weight: bold;
       text-align: center;
       font-size: 1.1rem;
-      margin-bottom: 10px;
     }
 
     .controls {
@@ -65,7 +61,6 @@
     }
 
     h1 {
-      font-weight: bold;
       color: #333;
       text-align: center;
     }
@@ -90,16 +85,25 @@
       margin-top: 1rem;
     }
 
-    .results h3 { font-weight: bold; color: #333; }
-    .results p { margin: 5px 0; }
-    .results strong { color: #222; font-weight: bold; }
-
-    .locked-section {
-      display: none;
+    .results h3, .results strong {
+      color: #333;
+      font-weight: bold;
     }
 
-    .add-on-group { margin-bottom: 1rem; }
-    .addon-buttons { display: flex; flex-wrap: wrap; gap: 3px; }
+    .results p {
+      margin: 5px 0;
+    }
+
+    .add-on-group {
+      margin-bottom: 1rem;
+    }
+
+    .addon-buttons {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 3px;
+    }
+
     .addon-button {
       padding: 5px 10px;
       border: 1px solid #666;
@@ -137,24 +141,14 @@
       width: 100%;
     }
 
-    button:hover { background: #45a049; }
-
-    .secret-toggle {
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 10px;
-      height: 10px;
-      opacity: 0;
-      cursor: pointer;
+    button:hover {
+      background: #45a049;
     }
   </style>
 </head>
 <body>
   <header>
-    <a href="https://www.instagram.com/Sweet.Toof.cy" target="_blank" rel="noopener">
-      <img src="sweet-toof-logo.png" alt="Sweet Toof Logo" />
-    </a>
+    <img src="sweet-toof-logo.png" alt="Sweet Toof Logo" />
   </header>
 
   <div class="container">
@@ -173,13 +167,11 @@
           <option value="solid_gold">Solid Gold (€250)</option>
         </select>
       </label>
-      <div id="toothSelections" class="tooth-selection"></div>
-      <button onclick="updateQuote()">Generate Quote</button>
+      <div id="toothSelections"></div>
+      <button id="generateQuoteBtn">Generate Quote</button>
       <div class="results" id="results" style="display:none;"></div>
     </div>
   </div>
-
-  <div class="secret-toggle" onclick="unlockAdmin()"></div>
 
   <script>
     const BASE_PRICES = {
@@ -204,14 +196,98 @@
     const IMPRESSION_COST = 3;
     const selectedTeeth = new Map();
 
-    function unlockAdmin() {
-      const password = prompt("Enter admin password:");
-      if (password === 'IODICE25') {
-        document.querySelectorAll('.locked-section').forEach(el => el.style.display = 'block');
-        alert("Admin view unlocked");
-      } else {
-        alert("Incorrect password.");
+    document.addEventListener('DOMContentLoaded', async () => {
+      const svgContainer = document.getElementById('svgContainer');
+      try {
+        const res = await fetch('./teeth-map.svg');
+        const svgText = await res.text();
+        svgContainer.innerHTML = svgText;
+        svgContainer.querySelector('svg')?.setAttribute('viewBox', '0 300 1080 400');
+        addSVGLabels();
+        initToothInteractivity();
+      } catch (err) {
+        console.error('Failed to load SVG:', err);
+        svgContainer.innerHTML = '<p>Failed to load SVG. Check your file path.</p>';
       }
+    });
+
+    document.getElementById('generateQuoteBtn').addEventListener('click', updateQuote);
+
+    function initToothInteractivity() {
+      document.querySelectorAll('.interactive-path').forEach(path => {
+        path.addEventListener('click', () => {
+          const toothId = path.dataset.tooth;
+          const isSelected = path.getAttribute('fill') === '#b0d5ee';
+          path.setAttribute('fill', isSelected ? 'transparent' : '#b0d5ee');
+
+          if (isSelected) {
+            selectedTeeth.delete(toothId);
+            document.getElementById(`control-${toothId}`)?.remove();
+          } else {
+            selectedTeeth.set(toothId, []);
+            addToothControl(toothId);
+          }
+        });
+      });
+    }
+
+    function addSVGLabels() {
+      const svg = document.querySelector('svg');
+      if (!svg) return;
+
+      const labels = [
+        { id: 'L1', x: 80, y: 580 }, { id: 'L2', x: 150, y: 580 },
+        { id: 'L3', x: 230, y: 580 }, { id: 'L4', x: 330, y: 580 },
+        { id: 'L5', x: 460, y: 590 }, { id: 'R1', x: 610, y: 590 },
+        { id: 'R2', x: 740, y: 580 }, { id: 'R3', x: 840, y: 580 },
+        { id: 'R4', x: 930, y: 580 }, { id: 'R5', x: 1000, y: 580 }
+      ];
+
+      labels.forEach(({ id, x, y }) => {
+        const text = document.createElementNS("http://www.w3.org/2000/svg", "text");
+        text.setAttribute('x', `${(x / 1080) * 100}%`);
+        text.setAttribute('y', `${(y / 1080) * 100}%`);
+        text.setAttribute('font-size', '16');
+        text.setAttribute('font-weight', 'bold');
+        text.setAttribute('text-anchor', 'middle');
+        text.setAttribute('fill', '#000');
+        text.textContent = id;
+        svg.appendChild(text);
+      });
+    }
+
+    function addToothControl(toothId) {
+      const container = document.getElementById('toothSelections');
+      const div = document.createElement('div');
+      div.id = `control-${toothId}`;
+      div.className = 'add-on-group';
+      div.innerHTML = `
+        <label>${toothId} Add-Ons
+          <div class="addon-buttons" id="addon-buttons-${toothId}">
+            ${Object.entries(ADD_ONS).map(([key, price]) => `
+              <button class="addon-button" data-addon="${key}" onclick="toggleAddOn('${toothId}', '${key}')">
+                ${key.replace('_', ' ')} (€${price})
+              </button>
+            `).join('')}
+          </div>
+        </label>
+      `;
+      container.appendChild(div);
+    }
+
+    function toggleAddOn(toothId, addon) {
+      const addOns = selectedTeeth.get(toothId) || [];
+      const index = addOns.indexOf(addon);
+      const button = document.querySelector(`#addon-buttons-${toothId} [data-addon="${addon}"]`);
+
+      if (index === -1) {
+        addOns.push(addon);
+        button.classList.add('selected');
+      } else {
+        addOns.splice(index, 1);
+        button.classList.remove('selected');
+      }
+      selectedTeeth.set(toothId, addOns);
     }
 
     function updateQuote() {
@@ -219,14 +295,11 @@
       const material = document.getElementById('material').value;
       const toothCount = selectedTeeth.size;
 
-      if (toothCount === 0) {
-        alert('Please select at least one tooth');
-        return;
-      }
+      if (!toothCount) return alert('Please select at least one tooth');
 
       const basePrice = BASE_PRICES[material];
       let addOnTotal = 0;
-      let addOnSummary = [];
+      const addOnSummary = [];
 
       selectedTeeth.forEach((addOns, toothId) => {
         const cost = addOns.reduce((sum, key) => sum + ADD_ONS[key], 0);
@@ -247,12 +320,11 @@
         <p><strong>Material:</strong> ${material.replace('_', ' ')}</p>
         <p><strong>Selected Teeth:</strong> ${toothCount}</p>
         <p><strong>Add-Ons:</strong><br>${addOnSummary.join('<br>')}</p>
-        <div class="locked-section">
-          <p><strong>Total Cost:</strong> €${totalCost}</p>
-          <p><strong>Profit:</strong> €${profit}</p>
-          <p><strong>Profit Margin:</strong> ${marginPercent}%</p>
-          <p><strong>Deposit Due (50%):</strong> €${depositDue}</p>
-        </div>
+        <p><strong>Total Sale Price:</strong> €${totalSalePrice}</p>
+        <p><strong>Total Cost:</strong> €${totalCost}</p>
+        <p><strong>Profit:</strong> €${profit}</p>
+        <p><strong>Profit Margin:</strong> ${marginPercent}%</p>
+        <p><strong>Deposit Due (50%):</strong> €${depositDue}</p>
       `;
     }
   </script>
