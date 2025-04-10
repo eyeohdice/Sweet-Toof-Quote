@@ -18,10 +18,11 @@
     }
 
     header img {
-  width: 100%;
-  max-width: 250px;
-  height: auto;
-}
+      width: 100%;
+      max-width: 250px;
+      height: auto;
+      cursor: pointer;
+    }
 
     .container {
       display: flex;
@@ -144,11 +145,31 @@
     button:hover {
       background: #45a049;
     }
+
+    .secret-btn {
+      position: fixed;
+      top: 10px;
+      left: 10px;
+      width: 50px;
+      height: 50px;
+      background-color: #f2f2f2;
+      border: none;
+      cursor: pointer;
+      z-index: 1000;
+    }
+
+    .secret-info {
+      display: none;
+    }
   </style>
 </head>
 <body>
+  <button class="secret-btn" onclick="askPassword()"></button>
+
   <header>
-    <img src="sweet-toof-logo.png" alt="Sweet Toof Logo" />
+    <a href="https://www.instagram.com/Sweet.Toof.cy" target="_blank">
+      <img src="sweet-toof-logo.png" alt="Sweet Toof Logo" />
+    </a>
   </header>
 
   <div class="container">
@@ -212,6 +233,15 @@
     });
 
     document.getElementById('generateQuoteBtn').addEventListener('click', updateQuote);
+
+    function askPassword() {
+      const input = prompt("Enter password:");
+      if (input === "IODICE25") {
+        document.querySelectorAll('.secret-info').forEach(el => el.style.display = 'block');
+      } else if (input) {
+        alert("Incorrect password");
+      }
+    }
 
     function initToothInteractivity() {
       document.querySelectorAll('.interactive-path').forEach(path => {
@@ -321,10 +351,12 @@
         <p><strong>Selected Teeth:</strong> ${toothCount}</p>
         <p><strong>Add-Ons:</strong><br>${addOnSummary.join('<br>')}</p>
         <p><strong>Total Sale Price:</strong> €${totalSalePrice}</p>
-        <p><strong>Total Cost:</strong> €${totalCost}</p>
-        <p><strong>Profit:</strong> €${profit}</p>
-        <p><strong>Profit Margin:</strong> ${marginPercent}%</p>
-        <p><strong>Deposit Due (50%):</strong> €${depositDue}</p>
+        <div class="secret-info">
+          <p><strong>Total Cost:</strong> €${totalCost}</p>
+          <p><strong>Profit:</strong> €${profit}</p>
+          <p><strong>Profit Margin:</strong> ${marginPercent}%</p>
+          <p><strong>Deposit Due (50%):</strong> €${depositDue}</p>
+        </div>
       `;
     }
   </script>
