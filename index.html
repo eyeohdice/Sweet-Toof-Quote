@@ -301,6 +301,14 @@
         <p><strong>Material:</strong> ${material.replace('_', ' ')}</p>
         <p><strong>Selected Teeth:</strong> ${toothCount}</p>
         <p><strong>Add-Ons:</strong><br>${addOnSummary.join('<br>')}</p>
+    <p><strong>Per-Tooth Breakdown:</strong><br>${
+      [...selectedTeeth.entries()].map(([toothId, addOns]) => {
+        const addOnCost = addOns.reduce((sum, key) => sum + ADD_ONS[key], 0);
+        const total = BASE_PRICES[material] + addOnCost;
+        return `${toothId}: €${total} (${BASE_PRICES[material]} base + €${addOnCost} add-ons)`;
+      }).join('<br>')
+    }</p>
+    
         <p><strong>Total Sale Price:</strong> €${totalSalePrice}</p>
         <div class="secret-info">
           <p><strong>Total Cost:</strong> €${totalCost}</p>
