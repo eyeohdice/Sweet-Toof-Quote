@@ -11,47 +11,30 @@
       background: #fdfdfd;
       padding: 2rem 1rem;
     }
-
-    header {
-      text-align: center;
-      margin-bottom: 2rem;
-    }
-
+    header { text-align: center; margin-bottom: 2rem; }
     header img {
       width: 100%;
       max-width: 250px;
       height: auto;
       cursor: pointer;
     }
-
     .container {
       display: flex;
       flex-direction: column;
       align-items: center;
       gap: 20px;
     }
-
-    .svg-container {
-      width: 100%;
-      max-width: 600px;
-    }
-
-    svg {
-      max-width: 100%;
-      height: auto;
-    }
-
+    .svg-container { width: 100%; max-width: 600px; }
+    svg { max-width: 100%; height: auto; }
     .interactive-path {
       transition: fill 0.3s ease;
       cursor: pointer;
     }
-
     .prompt-text {
       font-weight: bold;
       text-align: center;
       font-size: 1.1rem;
     }
-
     .controls {
       padding: 20px;
       background: white;
@@ -60,51 +43,35 @@
       width: 100%;
       max-width: 400px;
     }
-
-    h1 {
-      color: #333;
-      text-align: center;
-    }
-
+    h1 { color: #333; text-align: center; }
     label {
       display: block;
       margin-bottom: 1rem;
       font-weight: bold;
       color: #444;
     }
-
     select, input {
       width: 100%;
       padding: 5px;
       margin-top: 5px;
     }
-
     .results {
       background: #f9f9f9;
       padding: 1rem;
       border-radius: 8px;
       margin-top: 1rem;
     }
-
     .results h3, .results strong {
       color: #333;
       font-weight: bold;
     }
-
-    .results p {
-      margin: 5px 0;
-    }
-
-    .add-on-group {
-      margin-bottom: 1rem;
-    }
-
+    .results p { margin: 5px 0; }
+    .add-on-group { margin-bottom: 1rem; }
     .addon-buttons {
       display: flex;
       flex-wrap: wrap;
       gap: 3px;
     }
-
     .addon-button {
       padding: 5px 10px;
       border: 1px solid #666;
@@ -115,22 +82,18 @@
       font-weight: 500;
       white-space: nowrap;
     }
-
     .addon-button.selected {
       background: #005bbb;
       color: #fff;
       border-color: #004a9f;
     }
-
     .addon-button:hover {
       background: #d0d0d0;
       color: #222;
     }
-
     .addon-button.selected:hover {
       background: #004a9f;
     }
-
     button {
       padding: 8px 16px;
       background: #005bbb;
@@ -141,11 +104,7 @@
       font-weight: bold;
       width: 100%;
     }
-
-    button:hover {
-      background: #004a9f;
-    }
-
+    button:hover { background: #004a9f; }
     .secret-btn {
       position: fixed;
       top: 10px;
@@ -157,25 +116,19 @@
       cursor: pointer;
       z-index: 9999;
     }
-
-    .secret-info {
-      display: none;
-    }
+    .secret-info { display: none; }
   </style>
 </head>
 <body>
   <button class="secret-btn" onclick="askPassword()"></button>
-
   <header>
     <a href="https://www.instagram.com/Sweet.Toof.cy" target="_blank">
       <img src="sweet-toof-logo.png" alt="Sweet Toof Logo" />
     </a>
   </header>
-
   <div class="container">
     <div class="prompt-text">Click on the teeth to add to your custom grillz order – unclick to remove.</div>
     <div class="svg-container" id="svgContainer"></div>
-
     <div class="controls">
       <h1>Custom Grillz</h1>
       <label>Client Name
@@ -194,14 +147,18 @@
       <button id="copyQuoteBtn" style="margin-top: 10px; display: none;">📋 Copy My Quote</button>
     </div>
   </div>
-
   <script>
     const BASE_PRICES = {
       cobalt_chrome: 60,
       gold_plated: 100,
       solid_gold: 250
     };
-
+    const MATERIAL_FILL_COLORS = {
+      cobalt_chrome: '#d8d8d8',
+      gold_plated: '#ffd700',
+      solid_gold: '#ffcc00'
+    };
+    let currentFillColor = MATERIAL_FILL_COLORS['cobalt_chrome'];
     const ADD_ONS = {
       plain_solid: 0,
       cutout: 30,
@@ -213,18 +170,9 @@
       multi_color_plating: 30,
       custom_design: 100
     };
-
-    const MATERIAL_FILL_COLORS = {
-      cobalt_chrome: '#d8d8d8',
-      gold_plated: '#ffd700',
-      solid_gold: '#ffcc00'
-    };
-
-    let currentFillColor = MATERIAL_FILL_COLORS['cobalt_chrome'];
     const CAST_COST_PER_TOOTH = 20;
     const IMPRESSION_COST = 3;
     const selectedTeeth = new Map();
-
     document.addEventListener('DOMContentLoaded', async () => {
       const svgContainer = document.getElementById('svgContainer');
       try {
@@ -239,24 +187,15 @@
         svgContainer.innerHTML = '<p>Failed to load SVG. Check your file path.</p>';
       }
     });
-
     document.getElementById('material').addEventListener('change', e => {
       const selected = e.target.value;
       currentFillColor = MATERIAL_FILL_COLORS[selected];
-      updateSelectedToothFills();
-    });
-
-    function updateSelectedToothFills() {
       document.querySelectorAll('.interactive-path').forEach(path => {
-        const toothId = path.dataset.tooth;
-        if (selectedTeeth.has(toothId)) {
-          path.setAttribute('fill', currentFillColor);
-        }
+        const id = path.dataset.tooth;
+        if (selectedTeeth.has(id)) path.setAttribute('fill', currentFillColor);
       });
-    }
-
+    });
     document.getElementById('generateQuoteBtn').addEventListener('click', updateQuote);
-
     function askPassword() {
       const input = prompt("Enter password:");
       if (input === "IODICE25") {
@@ -265,14 +204,12 @@
         alert("Incorrect password");
       }
     }
-
     function initToothInteractivity() {
       document.querySelectorAll('.interactive-path').forEach(path => {
         path.addEventListener('click', () => {
           const toothId = path.dataset.tooth;
           const isSelected = selectedTeeth.has(toothId);
           path.setAttribute('fill', isSelected ? 'transparent' : currentFillColor);
-
           if (isSelected) {
             selectedTeeth.delete(toothId);
             document.getElementById(`control-${toothId}`)?.remove();
@@ -283,11 +220,9 @@
         });
       });
     }
-
     function addSVGLabels() {
       const svg = document.querySelector('svg');
       if (!svg) return;
-
       const labels = [
         { id: 'L1', x: 80, y: 580 }, { id: 'L2', x: 150, y: 580 },
         { id: 'L3', x: 230, y: 580 }, { id: 'L4', x: 330, y: 580 },
@@ -295,7 +230,6 @@
         { id: 'R2', x: 740, y: 580 }, { id: 'R3', x: 840, y: 580 },
         { id: 'R4', x: 930, y: 580 }, { id: 'R5', x: 1000, y: 580 }
       ];
-
       labels.forEach(({ id, x, y }) => {
         const text = document.createElementNS("http://www.w3.org/2000/svg", "text");
         text.setAttribute('x', `${(x / 1080) * 100}%`);
@@ -308,7 +242,6 @@
         svg.appendChild(text);
       });
     }
-
     function addToothControl(toothId) {
       const container = document.getElementById('toothSelections');
       const div = document.createElement('div');
@@ -327,12 +260,10 @@
       `;
       container.appendChild(div);
     }
-
     function toggleAddOn(toothId, addon) {
       const addOns = selectedTeeth.get(toothId) || [];
       const index = addOns.indexOf(addon);
       const button = document.querySelector(`#addon-buttons-${toothId} [data-addon="${addon}"]`);
-
       if (index === -1) {
         addOns.push(addon);
         button.classList.add('selected');
@@ -342,33 +273,26 @@
       }
       selectedTeeth.set(toothId, addOns);
     }
-
     function updateQuote() {
       const clientName = document.getElementById('clientName').value || 'Unnamed Client';
       const material = document.getElementById('material').value;
       const toothCount = selectedTeeth.size;
-
       if (!toothCount) return alert('Please select at least one tooth');
-
       const basePrice = BASE_PRICES[material];
       let addOnTotal = 0;
       const addOnSummary = [];
-
       selectedTeeth.forEach((addOns, toothId) => {
         const cost = addOns.reduce((sum, key) => sum + ADD_ONS[key], 0);
         addOnTotal += cost;
         addOnSummary.push(`${toothId}: ${addOns.length ? addOns.join(', ') : 'None'}`);
       });
-
       const totalSalePrice = (basePrice + addOnTotal) * toothCount;
       const totalCost = (CAST_COST_PER_TOOTH * toothCount) + IMPRESSION_COST;
       const profit = totalSalePrice - totalCost;
       const marginPercent = ((profit / totalSalePrice) * 100).toFixed(2);
       const depositDue = (totalSalePrice * 0.5).toFixed(2);
-
       const timestamp = new Date().toISOString().replace(/[-:.TZ]/g, '').slice(0, 14);
       const uniqueId = `${clientName.replace(/\s+/g, '').toUpperCase()}-${timestamp}`;
-
       const results = document.getElementById('results');
       results.style.display = 'block';
       results.innerHTML = `
@@ -385,7 +309,6 @@
           <p><strong>Deposit Due (50%):</strong> €${depositDue}</p>
         </div>
       `;
-
       const quoteText = `
 Sweet Toof – Custom Grillz Quote
 Quote ID: ${uniqueId}
@@ -393,21 +316,17 @@ Client: ${clientName}
 Material: ${material.replace('_', ' ')}
 Teeth Selected: ${toothCount}
 Add-Ons:
-${addOnSummary.join('
-')}
+${addOnSummary.join('\n')}
 Total Price: €${totalSalePrice}
 Deposit Due (50%): €${depositDue}
 `;
-
       window.lastQuoteText = quoteText;
       document.getElementById('copyQuoteBtn').style.display = 'block';
     }
-
     document.getElementById('copyQuoteBtn').addEventListener('click', () => {
       if (!window.lastQuoteText) return alert("No quote available to copy yet.");
       navigator.clipboard.writeText(window.lastQuoteText)
-        .then(() => alert('Quote copied to clipboard!
-Send this to @Sweet.Toof.cy on Instagram by clicking the logo at the top of the page.'))
+        .then(() => alert('Quote copied to clipboard!'))
         .catch(err => {
           console.error('Copy failed:', err);
           alert('Failed to copy the quote.');
