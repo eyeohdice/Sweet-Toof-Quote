@@ -113,39 +113,41 @@
       grid-template-columns: repeat(3, 1fr);
       grid-template-rows: repeat(3, auto);
       gap: 2px;
-      background: #fafafa; /* Light background for the grid */
-      padding: 8px; /* Padding around the grid */
-      border: 1px solid #eee; /* Subtle border around the grid */
-      border-radius: 4px; /* Rounded corners */
+      background: #fafafa;
+      padding: 8px;
+      border: 1px solid #eee;
+      border-radius: 4px;
     }
     .addon-button {
-      padding: 6px 4px; /* Adjusted padding for better spacing */
-      border: 1px solid #ddd; /* Lighter border */
+      padding: 6px 4px;
+      border: 1px solid #ddd;
       border-radius: 4px;
       cursor: pointer;
-      background: #fff; /* White background */
+      background: #fff;
       color: #333;
       font-size: 0.85rem;
-      font-weight: 400; /* Lighter font weight */
+      font-weight: 400;
       width: 100%;
-      text-align: center;
-      min-height: 60px; /* Fixed height for consistency */
+      min-height: 60px;
       display: flex;
-      flex-direction: column; /* Stack name and price vertically */
-      justify-content: center;
+      flex-direction: column;
+      justify-content: center; /* Center vertically */
+      align-items: center; /* Center horizontally */
       transition: background 0.3s ease, color 0.3s ease;
     }
     .addon-button .addon-name {
       display: block;
       font-size: 0.85rem;
-      line-height: 1.2; /* Tight line height */
+      line-height: 1.2;
+      text-align: center; /* Ensure text is centered */
     }
     .addon-button .addon-price {
       display: block;
       font-size: 0.75rem;
-      color: #666; /* Lighter color for price */
+      color: #666;
       margin-top: 2px;
       line-height: 1.2;
+      text-align: center; /* Ensure text is centered */
     }
     .addon-button.selected {
       background: #005bbb;
@@ -153,10 +155,10 @@
       border-color: #004a9f;
     }
     .addon-button.selected .addon-price {
-      color: #e0e0e0; /* Lighter price color when selected */
+      color: #e0e0e0;
     }
     .addon-button:hover {
-      background: #f0f0f0; /* Light grey hover effect */
+      background: #f0f0f0;
       color: #222;
     }
     .addon-button.selected:hover {
