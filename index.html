@@ -4,31 +4,18 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Sweet Toof – Custom Grillz Order</title>
-  <link href="https://fonts.googleapis.com/css2?family=Bubblegum+Sans&family=Bangers&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'><path d='M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8zm0-14c-2.21 0-4 1.79-4 4h2c0-1.1.9-2 2-2s2 .9 2 2c0 2-3 1.75-3 5h2c0-2.25 3-2.5 3-5 0-2.21-1.79-4-4-4z' fill='%23005bbb'/></svg>" type="image/svg+xml">
   <style>
     body {
-      font-family: 'Bubblegum Sans', Arial, sans-serif; /* Playful font */
+      font-family: 'Poppins', Arial, sans-serif; /* Clean, modern font */
       margin: 0;
       background: #fdfdfd;
-      padding: 3rem 1.5rem; /* Increased padding */
-      position: relative; /* For background pattern */
-    }
-    /* Subtle background pattern with cherry motif */
-    body::before {
-      content: '';
-      position: absolute;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      background: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="50" height="50" viewBox="0 0 50 50"><circle cx="25" cy="25" r="10" fill="rgba(0,0,0,0.05)"/><path d="M25 15 Q30 5 35 15" stroke="rgba(0,0,0,0.1)" stroke-width="2" fill="none"/></svg>') repeat;
-      opacity: 0.1;
-      z-index: -1;
+      padding: 2rem 1rem;
     }
     header {
       text-align: center;
-      margin-bottom: 3rem; /* More spacing */
-      position: relative;
+      margin-bottom: 2rem;
     }
     header img {
       width: 100%;
@@ -36,123 +23,102 @@
       height: auto;
       cursor: pointer;
     }
-    /* Tagline below logo */
-    .tagline {
-      font-family: 'Bangers', Arial, sans-serif;
-      font-size: 1.2rem;
-      color: #333;
-      margin-top: 0.5rem;
-      letter-spacing: 2px;
-      text-transform: uppercase;
-    }
     .container {
       display: flex;
       flex-direction: column;
       align-items: center;
-      gap: 30px; /* Increased gap */
+      gap: 20px;
     }
     .svg-container {
       width: 100%;
       max-width: 600px;
-      position: relative;
     }
     svg {
       max-width: 100%;
       height: auto;
     }
     .interactive-path {
-      transition: fill 0.3s ease, transform 0.2s ease; /* Added transform transition */
+      transition: fill 0.3s ease, opacity 0.3s ease; /* Smooth transition */
       cursor: pointer;
     }
     .interactive-path:hover {
-      transform: scale(1.05); /* Slight scale on hover */
-      filter: drop-shadow(0 0 5px rgba(0,0,0,0.2)); /* Glow effect */
-    }
-    .interactive-path.selected {
-      animation: pulse 0.3s ease; /* Selection animation */
-    }
-    @keyframes pulse {
-      0% { transform: scale(1); }
-      50% { transform: scale(1.1); }
-      100% { transform: scale(1); }
+      opacity: 0.8; /* Subtle hover effect */
     }
     .prompt-text {
-      font-weight: bold;
+      font-weight: 600; /* Semi-bold */
       text-align: center;
-      font-size: 1.2rem; /* Slightly larger */
-      margin-bottom: 1rem;
+      font-size: 1.1rem;
+      color: #333;
     }
     .controls {
-      padding: 25px; /* More padding */
+      padding: 20px;
       background: white;
-      border-radius: 12px; /* Softer corners */
-      box-shadow: 0 4px 15px rgba(0,0,0,0.15); /* Deeper shadow */
+      border-radius: 8px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.1); /* Subtle shadow */
       width: 100%;
       max-width: 400px;
-      border: 1px solid #e0e0e0; /* Subtle border */
     }
     h1 {
       color: #333;
       text-align: center;
-      font-family: 'Bangers', Arial, sans-serif; /* Bold font */
-      font-size: 2.5rem;
-      margin: 0 0 1.5rem; /* More spacing */
-      text-transform: uppercase;
-      letter-spacing: 2px;
+      font-weight: 600;
+      font-size: 2rem;
+      margin: 0 0 1rem;
     }
     label {
       display: block;
-      margin-bottom: 1.2rem; /* More spacing */
-      font-weight: bold;
+      margin-bottom: 1rem;
+      font-weight: 600;
       color: #444;
     }
     select, input {
       width: 100%;
-      padding: 8px; /* Slightly larger */
-      margin-top: 6px;
+      padding: 6px;
+      margin-top: 5px;
       border: 1px solid #ccc;
-      border-radius: 6px; /* Softer corners */
-      box-shadow: inset 0 1px 3px rgba(0,0,0,0.1); /* Subtle inset shadow */
+      border-radius: 4px;
       transition: border-color 0.3s ease;
     }
     select:focus, input:focus {
       outline: none;
       border-color: #005bbb;
-      box-shadow: 0 0 5px rgba(0,91,187,0.3);
     }
     .results {
       background: #f9f9f9;
-      padding: 1.2rem; /* More padding */
+      padding: 1rem;
       border-radius: 8px;
-      margin-top: 1.2rem;
-      border: 1px solid #e0e0e0;
+      margin-top: 1rem;
+      opacity: 0;
+      transition: opacity 0.5s ease; /* Fade-in animation */
+    }
+    .results.visible {
+      opacity: 1;
     }
     .results h3, .results strong {
       color: #333;
-      font-weight: bold;
+      font-weight: 600;
     }
     .results p {
-      margin: 6px 0;
+      margin: 5px 0;
     }
     .add-on-group {
-      margin-bottom: 1.2rem;
+      margin-bottom: 1rem;
     }
     .addon-buttons {
       display: flex;
       flex-wrap: wrap;
-      gap: 5px; /* Slightly larger gap */
+      gap: 3px;
     }
     .addon-button {
-      padding: 6px 12px;
+      padding: 5px 10px;
       border: 1px solid #666;
-      border-radius: 6px;
+      border-radius: 4px;
       cursor: pointer;
       background: #e0e0e0;
       color: #333;
       font-weight: 500;
       white-space: nowrap;
-      transition: all 0.3s ease;
-      position: relative; /* For icon */
+      transition: background 0.3s ease, color 0.3s ease;
     }
     .addon-button.selected {
       background: #005bbb;
@@ -162,78 +128,23 @@
     .addon-button:hover {
       background: #d0d0d0;
       color: #222;
-      transform: scale(1.05); /* Scale on hover */
     }
     .addon-button.selected:hover {
       background: #004a9f;
     }
-    /* Add star icon to selected add-ons */
-    .addon-button.selected::before {
-      content: '★';
-      position: absolute;
-      left: 5px;
-      top: 50%;
-      transform: translateY(-50%);
-      color: #fff;
-      font-size: 0.8rem;
-    }
     button {
-      padding: 10px 16px; /* Slightly larger */
+      padding: 8px 16px;
       background: #005bbb;
       color: white;
       border: none;
-      border-radius: 8px; /* Softer corners */
+      border-radius: 5px;
       cursor: pointer;
-      font-weight: bold;
-      font-family: 'Bangers', Arial, sans-serif; /* Bold font */
+      font-weight: 600;
       width: 100%;
-      transition: all 0.3s ease;
-      position: relative; /* For icon */
+      transition: background 0.3s ease;
     }
     button:hover {
       background: #004a9f;
-      transform: scale(1.05); /* Scale on hover */
-    }
-    /* Add icon to buttons */
-    #generateQuoteBtn::before {
-      content: '🦷';
-      margin-right: 8px;
-    }
-    #copyQuoteBtn::before {
-      content: '📋';
-      margin-right: 8px;
-    }
-    /* Shake animation for invalid state */
-    .shake {
-      animation: shake 0.5s ease;
-    }
-    @keyframes shake {
-      0%, 100% { transform: translateX(0); }
-      25% { transform: translateX(-5px); }
-      50% { transform: translateX(5px); }
-      75% { transform: translateX(-5px); }
-    }
-    /* Loading spinner */
-    .loading::after {
-      content: '⏳';
-      margin-left: 8px;
-      animation: spin 1s linear infinite;
-    }
-    @keyframes spin {
-      0% { transform: rotate(0deg); }
-      100% { transform: rotate(360deg); }
-    }
-    /* Confirmation animation */
-    .copied::after {
-      content: '✔';
-      margin-left: 8px;
-      color: #28a745;
-      animation: fadeInOut 1s ease;
-    }
-    @keyframes fadeInOut {
-      0% { opacity: 0; }
-      50% { opacity: 1; }
-      100% { opacity: 0; }
     }
     .secret-btn {
       position: fixed;
@@ -249,15 +160,28 @@
     .secret-info {
       display: none;
     }
+    footer {
+      margin-top: 2rem;
+      text-align: center;
+      font-size: 0.9rem;
+      color: #666;
+    }
+    footer a {
+      color: #005bbb;
+      text-decoration: none;
+      transition: color 0.3s ease;
+    }
+    footer a:hover {
+      color: #004a9f;
+    }
   </style>
 </head>
 <body>
-  <button class="secret-btn" onclick="askPassword()"></button>
+  <button class="secret-btn" onclick="askPassword()" aria-label="Access secret info"></button>
   <header>
     <a href="https://www.instagram.com/Sweet.Toof.cy" target="_blank">
       <img src="sweet-toof-logo.png" alt="Sweet Toof Logo" />
     </a>
-    <div class="tagline">Bite into Style</div> <!-- Added tagline -->
   </header>
   <div class="container">
     <div class="prompt-text">Click on the teeth to add to your custom grillz order – unclick to remove.</div>
@@ -277,9 +201,12 @@
       <div id="toothSelections"></div>
       <button id="generateQuoteBtn" aria-label="Generate Quote">Generate Quote</button>
       <div class="results" id="results" style="display:none;"></div>
-      <button id="copyQuoteBtn" style="margin-top: 10px; display: none;" aria-label="Copy Quote">Copy My Quote</button>
+      <button id="copyQuoteBtn" style="margin-top: 10px; display: none;" aria-label="Copy Quote">📋 Copy My Quote</button>
     </div>
   </div>
+  <footer>
+    Powered by <a href="https://www.instagram.com/Sweet.Toof.cy" target="_blank">Sweet Toof</a>
+  </footer>
   <script>
     function injectMaterialGradients() {
       const svg = document.querySelector('svg');
@@ -411,10 +338,7 @@
       currentFillColor = MATERIAL_FILL_COLORS[selected];
       document.querySelectorAll('.interactive-path').forEach(path => {
         const id = path.dataset.tooth;
-        if (selectedTeeth.has(id)) {
-          path.setAttribute('fill', currentFillColor);
-          path.classList.add('selected');
-        }
+        if (selectedTeeth.has(id)) path.setAttribute('fill', currentFillColor);
       });
     });
 
@@ -431,31 +355,20 @@
 
     function initToothInteractivity() {
       document.querySelectorAll('.interactive-path').forEach(path => {
-        path.setAttribute('tabindex', '0'); // Make focusable
-        path.setAttribute('aria-label', `Tooth ${path.dataset.tooth}`); // ARIA label
-        path.addEventListener('click', handleToothInteraction);
-        path.addEventListener('keypress', (e) => {
-          if (e.key === 'Enter' || e.key === ' ') {
-            e.preventDefault();
-            handleToothInteraction(e);
+        path.setAttribute('aria-label', `Tooth ${path.dataset.tooth}`);
+        path.addEventListener('click', () => {
+          const toothId = path.dataset.tooth;
+          const isSelected = selectedTeeth.has(toothId);
+          path.setAttribute('fill', isSelected ? 'transparent' : currentFillColor);
+          if (isSelected) {
+            selectedTeeth.delete(toothId);
+            document.getElementById(`control-${toothId}`)?.remove();
+          } else {
+            selectedTeeth.set(toothId, []);
+            addToothControl(toothId);
           }
         });
       });
-    }
-
-    function handleToothInteraction(e) {
-      const path = e.target;
-      const toothId = path.dataset.tooth;
-      const isSelected = selectedTeeth.has(toothId);
-      path.setAttribute('fill', isSelected ? 'transparent' : currentFillColor);
-      path.classList.toggle('selected', !isSelected);
-      if (isSelected) {
-        selectedTeeth.delete(toothId);
-        document.getElementById(`control-${toothId}`)?.remove();
-      } else {
-        selectedTeeth.set(toothId, []);
-        addToothControl(toothId);
-      }
     }
 
     function addSVGLabels() {
@@ -514,23 +427,11 @@
       selectedTeeth.set(toothId, addOns);
     }
 
-    async function updateQuote() {
-      const generateBtn = document.getElementById('generateQuoteBtn');
-      generateBtn.classList.add('loading');
-      generateBtn.disabled = true;
-
-      // Simulate processing
-      await new Promise(resolve => setTimeout(resolve, 1000));
-
+    function updateQuote() {
       const clientName = document.getElementById('clientName').value || 'Unnamed Client';
       const material = document.getElementById('material').value;
       const toothCount = selectedTeeth.size;
-      if (!toothCount) {
-        generateBtn.classList.remove('loading');
-        generateBtn.classList.add('shake');
-        generateBtn.disabled = false;
-        return alert('Please select at least one tooth');
-      }
+      if (!toothCount) return alert('Please select at least one tooth');
 
       let totalSalePrice = 0;
       const addOnSummary = [];
@@ -553,6 +454,7 @@
 
       const results = document.getElementById('results');
       results.style.display = 'block';
+      results.classList.add('visible'); // Trigger fade-in
       results.innerHTML = `
         <h3>Quote for ${clientName}</h3>
         <p><strong>Quote ID:</strong> ${uniqueId}</p>
@@ -583,32 +485,16 @@ Deposit Due (50%): €${depositDue}
 
       window.lastQuoteText = quoteText;
       document.getElementById('copyQuoteBtn').style.display = 'block';
-      generateBtn.classList.remove('loading');
-      generateBtn.disabled = false;
     }
 
-    document.getElementById('copyQuoteBtn').addEventListener('click', async () => {
-      const copyBtn = document.getElementById('copyQuoteBtn');
-      copyBtn.classList.add('loading');
-      copyBtn.disabled = true;
-
-      if (!window.lastQuoteText) {
-        copyBtn.classList.remove('loading');
-        copyBtn.disabled = false;
-        return alert("No quote available to copy yet.");
-      }
-
-      try {
-        await navigator.clipboard.writeText(window.lastQuoteText);
-        copyBtn.classList.remove('loading');
-        copyBtn.classList.add('copied');
-        alert('Quote copied to clipboard! \nSend this to @Sweet.Toof.cy on Instagram by clicking the logo at the top of the page.');
-      } catch (err) {
-        console.error('Copy failed:', err);
-        alert('Failed to copy the quote.');
-      } finally {
-        copyBtn.disabled = false;
-      }
+    document.getElementById('copyQuoteBtn').addEventListener('click', () => {
+      if (!window.lastQuoteText) return alert("No quote available to copy yet.");
+      navigator.clipboard.writeText(window.lastQuoteText)
+        .then(() => alert('Quote copied to clipboard! \nSend this to @Sweet.Toof.cy on Instagram by clicking the logo at the top of the page.'))
+        .catch(err => {
+          console.error('Copy failed:', err);
+          alert('Failed to copy the quote.');
+        });
     });
   </script>
 </body>
