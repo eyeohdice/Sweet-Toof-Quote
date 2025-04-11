@@ -105,35 +105,58 @@
       margin-bottom: 0.5rem;
     }
     .add-on-group label {
-      margin-bottom: 5px; /* Small margin to separate label from grid */
+      margin-bottom: 5px;
       font-weight: 600;
     }
     .addon-buttons {
       display: grid;
-      grid-template-columns: repeat(3, 1fr); /* 3 columns */
-      grid-template-rows: repeat(3, auto); /* 3 rows, auto height */
-      gap: 2px; /* Tight spacing between buttons */
+      grid-template-columns: repeat(3, 1fr);
+      grid-template-rows: repeat(3, auto);
+      gap: 2px;
+      background: #fafafa; /* Light background for the grid */
+      padding: 8px; /* Padding around the grid */
+      border: 1px solid #eee; /* Subtle border around the grid */
+      border-radius: 4px; /* Rounded corners */
     }
     .addon-button {
-      padding: 4px 8px;
-      border: 1px solid #666;
+      padding: 6px 4px; /* Adjusted padding for better spacing */
+      border: 1px solid #ddd; /* Lighter border */
       border-radius: 4px;
       cursor: pointer;
-      background: #e0e0e0;
+      background: #fff; /* White background */
       color: #333;
       font-size: 0.85rem;
-      font-weight: 500;
-      width: 100%; /* Stretch to fill grid cell */
-      text-align: center; /* Center text */
+      font-weight: 400; /* Lighter font weight */
+      width: 100%;
+      text-align: center;
+      min-height: 60px; /* Fixed height for consistency */
+      display: flex;
+      flex-direction: column; /* Stack name and price vertically */
+      justify-content: center;
       transition: background 0.3s ease, color 0.3s ease;
+    }
+    .addon-button .addon-name {
+      display: block;
+      font-size: 0.85rem;
+      line-height: 1.2; /* Tight line height */
+    }
+    .addon-button .addon-price {
+      display: block;
+      font-size: 0.75rem;
+      color: #666; /* Lighter color for price */
+      margin-top: 2px;
+      line-height: 1.2;
     }
     .addon-button.selected {
       background: #005bbb;
       color: #fff;
       border-color: #004a9f;
     }
+    .addon-button.selected .addon-price {
+      color: #e0e0e0; /* Lighter price color when selected */
+    }
     .addon-button:hover {
-      background: #d0d0d0;
+      background: #f0f0f0; /* Light grey hover effect */
       color: #222;
     }
     .addon-button.selected:hover {
@@ -212,7 +235,7 @@
     </div>
   </div>
   <footer>
-    Sweet Toof Cyprus <a href="https://www.instagram.com/Sweet.Toof.cy" target="_blank">Sweet Toof</a>
+    Powered by <a href="https://www.instagram.com/Sweet.Toof.cy" target="_blank">Sweet Toof</a>
   </footer>
   <script>
     function injectMaterialGradients() {
@@ -411,7 +434,8 @@
           <div class="addon-buttons" id="addon-buttons-${toothId}">
             ${Object.entries(ADD_ONS).map(([key, price]) => `
               <button class="addon-button" data-addon="${key}" onclick="toggleAddOn('${toothId}', '${key}')" aria-label="${key.replace('_', ' ')} add-on, €${price}">
-                ${key.replace('_', ' ')} (€${price})
+                <span class="addon-name">${key.replace('_', ' ')}</span>
+                <span class="addon-price">€${price}</span>
               </button>
             `).join('')}
           </div>
@@ -468,7 +492,7 @@
         <p><strong>Material:</strong> ${material.replace('_', ' ')}</p>
         <p><strong>Selected Teeth:</strong> ${toothCount}</p>
         <p><strong>Add-Ons:</strong><br>${addOnSummary.join('<br>')}</p>
-        <p><strong>Per-Tooth Breakdow:</strong><br>${perToothBreakdown.join('<br>')}</p>
+        <p><strong>Per-Tooth Breakdown:</strong><br>${perToothBreakdown.join('<br>')}</p>
         <p><strong>Total Sale Price:</strong> €${totalSalePrice}</p>
         <div class="secret-info">
           <p><strong>Total Cost:</strong> €${totalCost}</p>
