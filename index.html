@@ -104,25 +104,15 @@
     .add-on-group {
       margin-bottom: 0.5rem;
     }
+    .add-on-group label {
+      margin-bottom: 5px; /* Small margin to separate label from grid */
+      font-weight: 600;
+    }
     .addon-buttons {
-      display: flex;
-      flex-wrap: nowrap; /* Prevent wrapping */
-      overflow-x: auto; /* Enable horizontal scrolling */
-      gap: 2px;
-      padding-bottom: 5px; /* Space for scrollbar */
-      -webkit-overflow-scrolling: touch; /* Smooth scrolling on mobile */
-      scrollbar-width: thin; /* Firefox: thinner scrollbar */
-      scrollbar-color: #ccc #f9f9f9; /* Firefox: scrollbar colors */
-    }
-    .addon-buttons::-webkit-scrollbar {
-      height: 6px; /* Chrome/Safari: thinner scrollbar */
-    }
-    .addon-buttons::-webkit-scrollbar-track {
-      background: #f9f9f9; /* Track color */
-    }
-    .addon-buttons::-webkit-scrollbar-thumb {
-      background: #ccc; /* Thumb color */
-      border-radius: 3px;
+      display: grid;
+      grid-template-columns: repeat(3, 1fr); /* 3 columns */
+      grid-template-rows: repeat(3, auto); /* 3 rows, auto height */
+      gap: 2px; /* Tight spacing between buttons */
     }
     .addon-button {
       padding: 4px 8px;
@@ -133,7 +123,8 @@
       color: #333;
       font-size: 0.85rem;
       font-weight: 500;
-      white-space: nowrap; /* Prevent text wrapping */
+      width: 100%; /* Stretch to fill grid cell */
+      text-align: center; /* Center text */
       transition: background 0.3s ease, color 0.3s ease;
     }
     .addon-button.selected {
@@ -477,7 +468,7 @@
         <p><strong>Material:</strong> ${material.replace('_', ' ')}</p>
         <p><strong>Selected Teeth:</strong> ${toothCount}</p>
         <p><strong>Add-Ons:</strong><br>${addOnSummary.join('<br>')}</p>
-        <p><strong>Per-Tooth Breakdown:</strong><br>${perToothBreakdown.join('<br>')}</p>
+        <p><strong>Per-Tooth Breakdow:</strong><br>${perToothBreakdown.join('<br>')}</p>
         <p><strong>Total Sale Price:</strong> €${totalSalePrice}</p>
         <div class="secret-info">
           <p><strong>Total Cost:</strong> €${totalCost}</p>
