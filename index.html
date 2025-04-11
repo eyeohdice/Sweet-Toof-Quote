@@ -102,25 +102,38 @@
       margin: 5px 0;
     }
     .add-on-group {
-      margin-bottom: 0.5rem; /* Reduced margin to tighten vertical space */
+      margin-bottom: 0.5rem;
     }
     .addon-buttons {
       display: flex;
-      flex-wrap: wrap;
-      gap: 2px; /* Reduced gap for tighter spacing */
+      flex-wrap: nowrap; /* Prevent wrapping */
+      overflow-x: auto; /* Enable horizontal scrolling */
+      gap: 2px;
+      padding-bottom: 5px; /* Space for scrollbar */
+      -webkit-overflow-scrolling: touch; /* Smooth scrolling on mobile */
+      scrollbar-width: thin; /* Firefox: thinner scrollbar */
+      scrollbar-color: #ccc #f9f9f9; /* Firefox: scrollbar colors */
+    }
+    .addon-buttons::-webkit-scrollbar {
+      height: 6px; /* Chrome/Safari: thinner scrollbar */
+    }
+    .addon-buttons::-webkit-scrollbar-track {
+      background: #f9f9f9; /* Track color */
+    }
+    .addon-buttons::-webkit-scrollbar-thumb {
+      background: #ccc; /* Thumb color */
+      border-radius: 3px;
     }
     .addon-button {
-      padding: 4px 8px; /* Reduced padding for smaller buttons */
+      padding: 4px 8px;
       border: 1px solid #666;
       border-radius: 4px;
       cursor: pointer;
       background: #e0e0e0;
       color: #333;
-      font-size: 0.85rem; /* Smaller font size */
+      font-size: 0.85rem;
       font-weight: 500;
-      white-space: nowrap;
-      min-width: 80px; /* Ensure buttons don’t shrink too much */
-      text-align: center; /* Center text */
+      white-space: nowrap; /* Prevent text wrapping */
       transition: background 0.3s ease, color 0.3s ease;
     }
     .addon-button.selected {
