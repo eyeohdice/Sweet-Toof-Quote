@@ -8,7 +8,7 @@
   <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'><path d='M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8zm0-14c-2.21 0-4 1.79-4 4h2c0-1.1.9-2 2-2s2 .9 2 2c0 2-3 1.75-3 5h2c0-2.25 3-2.5 3-5 0-2.21-1.79-4-4-4z' fill='%23005bbb'/></svg>" type="image/svg+xml">
   <style>
     body {
-      font-family: 'Poppins', Arial, sans-serif; /* Clean, modern font */
+      font-family: 'Poppins', Arial, sans-serif;
       margin: 0;
       background: #fdfdfd;
       padding: 2rem 1rem;
@@ -38,14 +38,14 @@
       height: auto;
     }
     .interactive-path {
-      transition: fill 0.3s ease, opacity 0.3s ease; /* Smooth transition */
+      transition: fill 0.3s ease, opacity 0.3s ease;
       cursor: pointer;
     }
     .interactive-path:hover {
-      opacity: 0.8; /* Subtle hover effect */
+      opacity: 0.8;
     }
     .prompt-text {
-      font-weight: 600; /* Semi-bold */
+      font-weight: 600;
       text-align: center;
       font-size: 1.1rem;
       color: #333;
@@ -54,7 +54,7 @@
       padding: 20px;
       background: white;
       border-radius: 8px;
-      box-shadow: 0 2px 8px rgba(0,0,0,0.1); /* Subtle shadow */
+      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
       width: 100%;
       max-width: 400px;
     }
@@ -89,7 +89,7 @@
       border-radius: 8px;
       margin-top: 1rem;
       opacity: 0;
-      transition: opacity 0.5s ease; /* Fade-in animation */
+      transition: opacity 0.5s ease;
     }
     .results.visible {
       opacity: 1;
@@ -102,22 +102,25 @@
       margin: 5px 0;
     }
     .add-on-group {
-      margin-bottom: 1rem;
+      margin-bottom: 0.5rem; /* Reduced margin to tighten vertical space */
     }
     .addon-buttons {
       display: flex;
       flex-wrap: wrap;
-      gap: 3px;
+      gap: 2px; /* Reduced gap for tighter spacing */
     }
     .addon-button {
-      padding: 5px 10px;
+      padding: 4px 8px; /* Reduced padding for smaller buttons */
       border: 1px solid #666;
       border-radius: 4px;
       cursor: pointer;
       background: #e0e0e0;
       color: #333;
+      font-size: 0.85rem; /* Smaller font size */
       font-weight: 500;
       white-space: nowrap;
+      min-width: 80px; /* Ensure buttons don’t shrink too much */
+      text-align: center; /* Center text */
       transition: background 0.3s ease, color 0.3s ease;
     }
     .addon-button.selected {
@@ -454,7 +457,7 @@
 
       const results = document.getElementById('results');
       results.style.display = 'block';
-      results.classList.add('visible'); // Trigger fade-in
+      results.classList.add('visible');
       results.innerHTML = `
         <h3>Quote for ${clientName}</h3>
         <p><strong>Quote ID:</strong> ${uniqueId}</p>
