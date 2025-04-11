@@ -80,41 +80,89 @@
     </div>
   </div>
   <script>
-    const addMaterialGradients = () => {
+    function injectMaterialGradients() {
       const svg = document.querySelector('svg');
-      if (!svg || svg.querySelector('#gradient-cobalt')) return;
+      if (!svg) return;
 
-      const defs = document.createElementNS("http://www.w3.org/2000/svg", "defs");
+      // Create or get defs element
+      let defs = svg.querySelector('defs');
+      if (!defs) {
+        defs = document.createElementNS("http://www.w3.org/2000/svg", "defs");
+        svg.insertBefore(defs, svg.firstChild);
+      }
 
-      const chrome = document.createElementNS("http://www.w3.org/2000/svg", "linearGradient");
-      chrome.setAttribute("id", "gradient-cobalt");
-      chrome.setAttribute("x1", "0%");
-      chrome.setAttribute("y1", "0%");
-      chrome.setAttribute("x2", "100%");
-      chrome.setAttribute("y2", "100%");
-      chrome.innerHTML = '<stop offset="0%" stop-color="#c0d8ff" /><stop offset="100%" stop-color="#7fa7cc" />';
+      // Cobalt Chrome Gradient
+      if (!svg.querySelector('#cobalt-chrome-gradient')) {
+        const cobaltGradient = document.createElementNS("http://www.w3.org/2000/svg", "linearGradient");
+        cobaltGradient.setAttribute("id", "cobalt-chrome-gradient");
+        cobaltGradient.setAttribute("x1", "0%");
+        cobaltGradient.setAttribute("y1", "0%");
+        cobaltGradient.setAttribute("x2", "100%");
+        cobaltGradient.setAttribute("y2", "100%");
+        
+        const cobaltStop1 = document.createElementNS("http://www.w3.org/2000/svg", "stop");
+        cobaltStop1.setAttribute("offset", "0%");
+        cobaltStop1.setAttribute("stop-color", "#d7dfe9"); // Light silvery-blue
+        cobaltStop1.setAttribute("stop-opacity", "1");
+        
+        const cobaltStop2 = document.createElementNS("http://www.w3.org/2000/svg", "stop");
+        cobaltStop2.setAttribute("offset", "100%");
+        cobaltStop2.setAttribute("stop-color", "#6b8299"); // Deeper blue-gray
+        cobaltStop2.setAttribute("stop-opacity", "1");
+        
+        cobaltGradient.appendChild(cobaltStop1);
+        cobaltGradient.appendChild(cobaltStop2);
+        defs.appendChild(cobaltGradient);
+      }
 
-      const plated = document.createElementNS("http://www.w3.org/2000/svg", "linearGradient");
-      plated.setAttribute("id", "gradient-plated");
-      plated.setAttribute("x1", "0%");
-      plated.setAttribute("y1", "0%");
-      plated.setAttribute("x2", "100%");
-      plated.setAttribute("y2", "100%");
-      plated.innerHTML = '<stop offset="0%" stop-color="#f5e9a0" /><stop offset="100%" stop-color="#c2a84e" />';
+      // Gold Plated Gradient
+      if (!svg.querySelector('#gold-plated-gradient')) {
+        const goldPlatedGradient = document.createElementNS("http://www.w3.org/2000/svg", "linearGradient");
+        goldPlatedGradient.setAttribute("id", "gold-plated-gradient");
+        goldPlatedGradient.setAttribute("x1", "0%");
+        goldPlatedGradient.setAttribute("y1", "0%");
+        goldPlatedGradient.setAttribute("x2", "100%");
+        goldPlatedGradient.setAttribute("y2", "100%");
+        
+        const goldPlatedStop1 = document.createElementNS("http://www.w3.org/2000/svg", "stop");
+        goldPlatedStop1.setAttribute("offset", "0%");
+        goldPlatedStop1.setAttribute("stop-color", "#f0e7b7"); // Pale creamy yellow
+        goldPlatedStop1.setAttribute("stop-opacity", "1");
+        
+        const goldPlatedStop2 = document.createElementNS("http://www.w3.org/2000/svg", "stop");
+        goldPlatedStop2.setAttribute("offset", "100%");
+        goldPlatedStop2.setAttribute("stop-color", "#d4c085"); // Slightly deeper chalky yellow
+        goldPlatedStop2.setAttribute("stop-opacity", "1");
+        
+        goldPlatedGradient.appendChild(goldPlatedStop1);
+        goldPlatedGradient.appendChild(goldPlatedStop2);
+        defs.appendChild(goldPlatedGradient);
+      }
 
-      const solid = document.createElementNS("http://www.w3.org/2000/svg", "linearGradient");
-      solid.setAttribute("id", "gradient-solid");
-      solid.setAttribute("x1", "0%");
-      solid.setAttribute("y1", "0%");
-      solid.setAttribute("x2", "100%");
-      solid.setAttribute("y2", "100%");
-      solid.innerHTML = '<stop offset="0%" stop-color="#f7e788" /><stop offset="100%" stop-color="#d4af37" />';
-
-      defs.appendChild(chrome);
-      defs.appendChild(plated);
-      defs.appendChild(solid);
-      svg.insertBefore(defs, svg.firstChild);
-    };
+      // Solid Gold Gradient
+      if (!svg.querySelector('#solid-gold-gradient')) {
+        const solidGoldGradient = document.createElementNS("http://www.w3.org/2000/svg", "linearGradient");
+        solidGoldGradient.setAttribute("id", "solid-gold-gradient");
+        solidGoldGradient.setAttribute("x1", "0%");
+        solidGoldGradient.setAttribute("y1", "0%");
+        solidGoldGradient.setAttribute("x2", "100%");
+        solidGoldGradient.setAttribute("y2", "100%");
+        
+        const solidGoldStop1 = document.createElementNS("http://www.w3.org/2000/svg", "stop");
+        solidGoldStop1.setAttribute("offset", "0%");
+        solidGoldStop1.setAttribute("stop-color", "#f7e788"); // Bright gold
+        solidGoldStop1.setAttribute("stop-opacity", "1");
+        
+        const solidGoldStop2 = document.createElementNS("http://www.w3.org/2000/svg", "stop");
+        solidGoldStop2.setAttribute("offset", "100%");
+        solidGoldStop2.setAttribute("stop-color", "#d4af37"); // Deep rich gold
+        solidGoldStop2.setAttribute("stop-opacity", "1");
+        
+        solidGoldGradient.appendChild(solidGoldStop1);
+        solidGoldGradient.appendChild(solidGoldStop2);
+        defs.appendChild(solidGoldGradient);
+      }
+    }
 
     const BASE_PRICES = {
       cobalt_chrome: 60,
@@ -123,9 +171,9 @@
     };
 
     const MATERIAL_FILL_COLORS = {
-      cobalt_chrome: '#a4c2f4',
-      gold_plated: '#e4cc75',
-      solid_gold: 'url(#gold-gradient)'
+      cobalt_chrome: 'url(#cobalt-chrome-gradient)',
+      gold_plated: 'url(#gold-plated-gradient)',
+      solid_gold: 'url(#solid-gold-gradient)'
     };
 
     const ADD_ONS = {
@@ -152,7 +200,7 @@
         const svgText = await res.text();
         svgContainer.innerHTML = svgText;
         svgContainer.querySelector('svg')?.setAttribute('viewBox', '0 300 1080 400');
-        addGoldGradient();
+        injectMaterialGradients();
         addSVGLabels();
         initToothInteractivity();
       } catch (err) {
