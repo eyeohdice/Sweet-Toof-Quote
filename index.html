@@ -1,178 +1,55 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Sweet Toof – Custom Grillz Order</title>
-  <link href="https://fonts.googleapis.com/css2?family=Bubblegum+Sans&family=Bangers&display=swap" rel="stylesheet">
   <style>
-    body {
-      font-family: 'Bubblegum Sans', Arial, sans-serif;
-      margin: 0;
-      background: #F4A8B5; /* Pink */
-      padding: 2rem 1rem;
-      color: #FFFFFF; /* White */
-    }
-    header {
-      text-align: center;
-      margin-bottom: 2rem;
-    }
-    header img {
-      width: 100%;
-      max-width: 250px;
-      height: auto;
-      cursor: pointer;
-      filter: drop-shadow(0 0 8px #F4A8B5); /* Pink glow */
-    }
-    .container {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      gap: 20px;
-    }
-    .svg-container {
-      width: 100%;
-      max-width: 600px;
-    }
-    svg {
-      max-width: 100%;
-      height: auto;
-    }
-    .interactive-path {
-      transition: fill 0.3s ease;
-      cursor: pointer;
-      stroke: #E63946; /* Red outline */
-      stroke-width: 0.5;
-    }
-    .interactive-path.selected {
-      stroke: #F1C40F; /* Yellow for selected */
-      stroke-width: 1;
-    }
-    .prompt-text {
-      font-weight: 700;
-      text-align: center;
-      font-size: 1.2rem;
-      color: #E63946; /* Red */
-      text-shadow: 0 0 4px rgba(230, 57, 70, 0.5);
-    }
+    body { font-family: sans-serif; margin: 0; background: #fdfdfd; padding: 2rem 1rem; }
+    header { text-align: center; margin-bottom: 2rem; }
+    header img { width: 100%; max-width: 250px; height: auto; cursor: pointer; }
+    .container { display: flex; flex-direction: column; align-items: center; gap: 20px; }
+    .svg-container { width: 100%; max-width: 600px; }
+    svg { max-width: 100%; height: auto; }
+    .interactive-path { transition: fill 0.3s ease; cursor: pointer; }
+    .prompt-text { font-weight: bold; text-align: center; font-size: 1.1rem; }
     .controls {
-      padding: 20px;
-      background: #FFFFFF; /* White */
-      border: 2px solid #F4A8B5; /* Pink border */
-      border-radius: 12px;
-      box-shadow: 0 4px 10px rgba(244, 168, 181, 0.3);
-      width: 100%;
-      max-width: 400px;
+      padding: 20px; background: white; border-radius: 8px;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.1); width: 100%; max-width: 400px;
     }
-    h1 {
-      color: #E63946; /* Red */
-      text-align: center;
-      font-family: 'Bangers', Arial, sans-serif;
-      font-size: 2.5rem;
-      margin: 0 0 1rem;
-      letter-spacing: 2px;
-    }
-    label {
-      display: block;
-      margin-bottom: 1rem;
-      font-weight: 700;
-      color: #E63946; /* Red */
-    }
-    select, input {
-      width: 100%;
-      padding: 8px;
-      margin-top: 5px;
-      background: #F4A8B5; /* Pink */
-      border: 1px solid #E63946; /* Red */
-      border-radius: 6px;
-      color: #1C2526; /* Near-Black */
-      font-family: 'Bubblegum Sans', Arial, sans-serif;
-    }
-    select:focus, input:focus {
-      outline: none;
-      border-color: #1E90FF; /* Blue */
-      box-shadow: 0 0 5px #1E90FF;
-    }
+    h1 { color: #333; text-align: center; }
+    label { display: block; margin-bottom: 1rem; font-weight: bold; color: #444; }
+    select, input { width: 100%; padding: 5px; margin-top: 5px; }
     .results {
-      background: linear-gradient(135deg, #F4A8B5 0%, #FFFFFF 100%); /* Pink to White */
-      padding: 1rem;
-      border-radius: 8px;
-      margin-top: 1rem;
-      border: 1px solid #E63946; /* Red */
+      background: #f9f9f9; padding: 1rem; border-radius: 8px; margin-top: 1rem;
     }
-    .results h3, .results strong {
-      color: #E63946; /* Red */
-      font-weight: 700;
-    }
-    .results p {
-      margin: 5px 0;
-      color: #1C2526; /* Near-Black */
-    }
-    .add-on-group {
-      margin-bottom: 1rem;
-    }
-    .addon-buttons {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 5px;
-    }
+    .results h3, .results strong { color: #333; font-weight: bold; }
+    .results p { margin: 5px 0; }
+    .add-on-group { margin-bottom: 1rem; }
+    .addon-buttons { display: flex; flex-wrap: wrap; gap: 3px; }
     .addon-button {
-      padding: 6px 12px;
-      border: 1px solid #E63946; /* Red */
-      border-radius: 6px;
-      cursor: pointer;
-      background: #F4A8B5; /* Pink */
-      color: #1C2526; /* Near-Black */
-      font-weight: 500;
-      font-family: 'Bubblegum Sans', Arial, sans-serif;
+      padding: 5px 10px; border: 1px solid #666; border-radius: 4px;
+      cursor: pointer; background: #e0e0e0; color: #333; font-weight: 500;
       white-space: nowrap;
-      transition: all 0.3s ease;
     }
     .addon-button.selected {
-      background: #F1C40F; /* Yellow */
-      color: #1C2526; /* Near-Black */
-      border-color: #F1C40F;
+      background: #005bbb; color: #fff; border-color: #004a9f;
     }
-    .addon-button:hover {
-      background: #1E90FF; /* Blue */
-      color: #FFFFFF; /* White */
-      box-shadow: 0 0 8px #1E90FF;
-    }
-    .addon-button.selected:hover {
-      background: #F1C40F; /* Yellow */
-    }
+    .addon-button:hover { background: #d0d0d0; color: #222; }
+    .addon-button.selected:hover { background: #004a9f; }
     button {
-      padding: 10px 16px;
-      background: #2ECC71; /* Green */
-      color: #1C2526; /* Near-Black */
-      border: none;
-      border-radius: 8px;
-      cursor: pointer;
-      font-weight: 700;
-      font-family: 'Bangers', Arial, sans-serif;
+      padding: 8px 16px; background: #005bbb; color: white;
+      border: none; border-radius: 5px; cursor: pointer; font-weight: bold;
       width: 100%;
-      transition: all 0.3s ease;
-      letter-spacing: 1px;
     }
-    button:hover {
-      background: #1E90FF; /* Blue */
-      color: #FFFFFF; /* White */
-      box-shadow: 0 0 10px #1E90FF;
-    }
+    button:hover { background: #004a9f; }
     .secret-btn {
-      position: fixed;
-      top: 10px;
-      left: 10px;
-      width: 50px;
-      height: 50px;
-      background-color: transparent;
-      border: none;
-      cursor: pointer;
-      z-index: 9999;
+      position: fixed; top: 10px; left: 10px;
+      width: 50px; height: 50px; background-color: transparent;
+      border: none; cursor: pointer; z-index: 9999;
     }
-    .secret-info {
-      display: none;
-    }
+    .secret-info { display: none; }
   </style>
 </head>
 <body>
@@ -186,7 +63,7 @@
     <div class="prompt-text">Click on the teeth to add to your custom grillz order – unclick to remove.</div>
     <div class="svg-container" id="svgContainer"></div>
     <div class="controls">
-      <h1>Sweet Toof</h1>
+      <h1>Custom Grillz</h1>
       <label>Client Name
         <input type="text" id="clientName" />
       </label>
@@ -329,7 +206,7 @@
         initToothInteractivity();
       } catch (err) {
         console.error('Failed to load SVG:', err);
-        svgContainer.innerHTML = '<p style="color: #E63946;">Failed to load SVG. Check your file path.</p>';
+        svgContainer.innerHTML = '<p>Failed to load SVG. Check your file path.</p>';
       }
     });
 
@@ -338,10 +215,7 @@
       currentFillColor = MATERIAL_FILL_COLORS[selected];
       document.querySelectorAll('.interactive-path').forEach(path => {
         const id = path.dataset.tooth;
-        if (selectedTeeth.has(id)) {
-          path.setAttribute('fill', currentFillColor);
-          path.classList.add('selected');
-        }
+        if (selectedTeeth.has(id)) path.setAttribute('fill', currentFillColor);
       });
     });
 
@@ -362,7 +236,6 @@
           const toothId = path.dataset.tooth;
           const isSelected = selectedTeeth.has(toothId);
           path.setAttribute('fill', isSelected ? 'transparent' : currentFillColor);
-          path.classList.toggle('selected', !isSelected);
           if (isSelected) {
             selectedTeeth.delete(toothId);
             document.getElementById(`control-${toothId}`)?.remove();
@@ -391,7 +264,7 @@
         text.setAttribute('font-size', '16');
         text.setAttribute('font-weight', 'bold');
         text.setAttribute('text-anchor', 'middle');
-        text.setAttribute('fill', '#E63946'); /* Red */
+        text.setAttribute('fill', '#000');
         text.textContent = id;
         svg.appendChild(text);
       });
