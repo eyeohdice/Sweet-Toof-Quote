@@ -1,55 +1,254 @@
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Sweet Toof – Custom Grillz Order</title>
+  <link href="https://fonts.googleapis.com/css2?family=Bubblegum+Sans&family=Bangers&display=swap" rel="stylesheet">
   <style>
-    body { font-family: sans-serif; margin: 0; background: #fdfdfd; padding: 2rem 1rem; }
-    header { text-align: center; margin-bottom: 2rem; }
-    header img { width: 100%; max-width: 250px; height: auto; cursor: pointer; }
-    .container { display: flex; flex-direction: column; align-items: center; gap: 20px; }
-    .svg-container { width: 100%; max-width: 600px; }
-    svg { max-width: 100%; height: auto; }
-    .interactive-path { transition: fill 0.3s ease; cursor: pointer; }
-    .prompt-text { font-weight: bold; text-align: center; font-size: 1.1rem; }
+    body {
+      font-family: 'Bubblegum Sans', Arial, sans-serif; /* Playful font */
+      margin: 0;
+      background: #fdfdfd;
+      padding: 3rem 1.5rem; /* Increased padding */
+      position: relative; /* For background pattern */
+    }
+    /* Subtle background pattern with cherry motif */
+    body::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="50" height="50" viewBox="0 0 50 50"><circle cx="25" cy="25" r="10" fill="rgba(0,0,0,0.05)"/><path d="M25 15 Q30 5 35 15" stroke="rgba(0,0,0,0.1)" stroke-width="2" fill="none"/></svg>') repeat;
+      opacity: 0.1;
+      z-index: -1;
+    }
+    header {
+      text-align: center;
+      margin-bottom: 3rem; /* More spacing */
+      position: relative;
+    }
+    header img {
+      width: 100%;
+      max-width: 250px;
+      height: auto;
+      cursor: pointer;
+    }
+    /* Tagline below logo */
+    .tagline {
+      font-family: 'Bangers', Arial, sans-serif;
+      font-size: 1.2rem;
+      color: #333;
+      margin-top: 0.5rem;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+    }
+    .container {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 30px; /* Increased gap */
+    }
+    .svg-container {
+      width: 100%;
+      max-width: 600px;
+      position: relative;
+    }
+    svg {
+      max-width: 100%;
+      height: auto;
+    }
+    .interactive-path {
+      transition: fill 0.3s ease, transform 0.2s ease; /* Added transform transition */
+      cursor: pointer;
+    }
+    .interactive-path:hover {
+      transform: scale(1.05); /* Slight scale on hover */
+      filter: drop-shadow(0 0 5px rgba(0,0,0,0.2)); /* Glow effect */
+    }
+    .interactive-path.selected {
+      animation: pulse 0.3s ease; /* Selection animation */
+    }
+    @keyframes pulse {
+      0% { transform: scale(1); }
+      50% { transform: scale(1.1); }
+      100% { transform: scale(1); }
+    }
+    .prompt-text {
+      font-weight: bold;
+      text-align: center;
+      font-size: 1.2rem; /* Slightly larger */
+      margin-bottom: 1rem;
+    }
     .controls {
-      padding: 20px; background: white; border-radius: 8px;
-      box-shadow: 0 2px 5px rgba(0,0,0,0.1); width: 100%; max-width: 400px;
+      padding: 25px; /* More padding */
+      background: white;
+      border-radius: 12px; /* Softer corners */
+      box-shadow: 0 4px 15px rgba(0,0,0,0.15); /* Deeper shadow */
+      width: 100%;
+      max-width: 400px;
+      border: 1px solid #e0e0e0; /* Subtle border */
     }
-    h1 { color: #333; text-align: center; }
-    label { display: block; margin-bottom: 1rem; font-weight: bold; color: #444; }
-    select, input { width: 100%; padding: 5px; margin-top: 5px; }
+    h1 {
+      color: #333;
+      text-align: center;
+      font-family: 'Bangers', Arial, sans-serif; /* Bold font */
+      font-size: 2.5rem;
+      margin: 0 0 1.5rem; /* More spacing */
+      text-transform: uppercase;
+      letter-spacing: 2px;
+    }
+    label {
+      display: block;
+      margin-bottom: 1.2rem; /* More spacing */
+      font-weight: bold;
+      color: #444;
+    }
+    select, input {
+      width: 100%;
+      padding: 8px; /* Slightly larger */
+      margin-top: 6px;
+      border: 1px solid #ccc;
+      border-radius: 6px; /* Softer corners */
+      box-shadow: inset 0 1px 3px rgba(0,0,0,0.1); /* Subtle inset shadow */
+      transition: border-color 0.3s ease;
+    }
+    select:focus, input:focus {
+      outline: none;
+      border-color: #005bbb;
+      box-shadow: 0 0 5px rgba(0,91,187,0.3);
+    }
     .results {
-      background: #f9f9f9; padding: 1rem; border-radius: 8px; margin-top: 1rem;
+      background: #f9f9f9;
+      padding: 1.2rem; /* More padding */
+      border-radius: 8px;
+      margin-top: 1.2rem;
+      border: 1px solid #e0e0e0;
     }
-    .results h3, .results strong { color: #333; font-weight: bold; }
-    .results p { margin: 5px 0; }
-    .add-on-group { margin-bottom: 1rem; }
-    .addon-buttons { display: flex; flex-wrap: wrap; gap: 3px; }
+    .results h3, .results strong {
+      color: #333;
+      font-weight: bold;
+    }
+    .results p {
+      margin: 6px 0;
+    }
+    .add-on-group {
+      margin-bottom: 1.2rem;
+    }
+    .addon-buttons {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 5px; /* Slightly larger gap */
+    }
     .addon-button {
-      padding: 5px 10px; border: 1px solid #666; border-radius: 4px;
-      cursor: pointer; background: #e0e0e0; color: #333; font-weight: 500;
+      padding: 6px 12px;
+      border: 1px solid #666;
+      border-radius: 6px;
+      cursor: pointer;
+      background: #e0e0e0;
+      color: #333;
+      font-weight: 500;
       white-space: nowrap;
+      transition: all 0.3s ease;
+      position: relative; /* For icon */
     }
     .addon-button.selected {
-      background: #005bbb; color: #fff; border-color: #004a9f;
+      background: #005bbb;
+      color: #fff;
+      border-color: #004a9f;
     }
-    .addon-button:hover { background: #d0d0d0; color: #222; }
-    .addon-button.selected:hover { background: #004a9f; }
+    .addon-button:hover {
+      background: #d0d0d0;
+      color: #222;
+      transform: scale(1.05); /* Scale on hover */
+    }
+    .addon-button.selected:hover {
+      background: #004a9f;
+    }
+    /* Add star icon to selected add-ons */
+    .addon-button.selected::before {
+      content: '★';
+      position: absolute;
+      left: 5px;
+      top: 50%;
+      transform: translateY(-50%);
+      color: #fff;
+      font-size: 0.8rem;
+    }
     button {
-      padding: 8px 16px; background: #005bbb; color: white;
-      border: none; border-radius: 5px; cursor: pointer; font-weight: bold;
+      padding: 10px 16px; /* Slightly larger */
+      background: #005bbb;
+      color: white;
+      border: none;
+      border-radius: 8px; /* Softer corners */
+      cursor: pointer;
+      font-weight: bold;
+      font-family: 'Bangers', Arial, sans-serif; /* Bold font */
       width: 100%;
+      transition: all 0.3s ease;
+      position: relative; /* For icon */
     }
-    button:hover { background: #004a9f; }
+    button:hover {
+      background: #004a9f;
+      transform: scale(1.05); /* Scale on hover */
+    }
+    /* Add icon to buttons */
+    #generateQuoteBtn::before {
+      content: '🦷';
+      margin-right: 8px;
+    }
+    #copyQuoteBtn::before {
+      content: '📋';
+      margin-right: 8px;
+    }
+    /* Shake animation for invalid state */
+    .shake {
+      animation: shake 0.5s ease;
+    }
+    @keyframes shake {
+      0%, 100% { transform: translateX(0); }
+      25% { transform: translateX(-5px); }
+      50% { transform: translateX(5px); }
+      75% { transform: translateX(-5px); }
+    }
+    /* Loading spinner */
+    .loading::after {
+      content: '⏳';
+      margin-left: 8px;
+      animation: spin 1s linear infinite;
+    }
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+    /* Confirmation animation */
+    .copied::after {
+      content: '✔';
+      margin-left: 8px;
+      color: #28a745;
+      animation: fadeInOut 1s ease;
+    }
+    @keyframes fadeInOut {
+      0% { opacity: 0; }
+      50% { opacity: 1; }
+      100% { opacity: 0; }
+    }
     .secret-btn {
-      position: fixed; top: 10px; left: 10px;
-      width: 50px; height: 50px; background-color: transparent;
-      border: none; cursor: pointer; z-index: 9999;
+      position: fixed;
+      top: 10px;
+      left: 10px;
+      width: 50px;
+      height: 50px;
+      background-color: transparent;
+      border: none;
+      cursor: pointer;
+      z-index: 9999;
     }
-    .secret-info { display: none; }
+    .secret-info {
+      display: none;
+    }
   </style>
 </head>
 <body>
@@ -58,6 +257,7 @@
     <a href="https://www.instagram.com/Sweet.Toof.cy" target="_blank">
       <img src="sweet-toof-logo.png" alt="Sweet Toof Logo" />
     </a>
+    <div class="tagline">Bite into Style</div> <!-- Added tagline -->
   </header>
   <div class="container">
     <div class="prompt-text">Click on the teeth to add to your custom grillz order – unclick to remove.</div>
@@ -65,19 +265,19 @@
     <div class="controls">
       <h1>Custom Grillz</h1>
       <label>Client Name
-        <input type="text" id="clientName" />
+        <input type="text" id="clientName" aria-label="Client Name" />
       </label>
       <label>Material
-        <select id="material">
+        <select id="material" aria-label="Select Material">
           <option value="cobalt_chrome">Cobalt Chrome (€60)</option>
           <option value="gold_plated">Gold Plated (€100)</option>
           <option value="solid_gold">Solid Gold (€250)</option>
         </select>
       </label>
       <div id="toothSelections"></div>
-      <button id="generateQuoteBtn">Generate Quote</button>
+      <button id="generateQuoteBtn" aria-label="Generate Quote">Generate Quote</button>
       <div class="results" id="results" style="display:none;"></div>
-      <button id="copyQuoteBtn" style="margin-top: 10px; display: none;">📋 Copy My Quote</button>
+      <button id="copyQuoteBtn" style="margin-top: 10px; display: none;" aria-label="Copy Quote">Copy My Quote</button>
     </div>
   </div>
   <script>
@@ -85,14 +285,12 @@
       const svg = document.querySelector('svg');
       if (!svg) return;
 
-      // Create or get defs element
       let defs = svg.querySelector('defs');
       if (!defs) {
         defs = document.createElementNS("http://www.w3.org/2000/svg", "defs");
         svg.insertBefore(defs, svg.firstChild);
       }
 
-      // Cobalt Chrome Gradient
       if (!svg.querySelector('#cobalt-chrome-gradient')) {
         const cobaltGradient = document.createElementNS("http://www.w3.org/2000/svg", "linearGradient");
         cobaltGradient.setAttribute("id", "cobalt-chrome-gradient");
@@ -103,12 +301,12 @@
         
         const cobaltStop1 = document.createElementNS("http://www.w3.org/2000/svg", "stop");
         cobaltStop1.setAttribute("offset", "0%");
-        cobaltStop1.setAttribute("stop-color", "#d7dfe9"); // Light silvery-blue
+        cobaltStop1.setAttribute("stop-color", "#d7dfe9");
         cobaltStop1.setAttribute("stop-opacity", "1");
         
         const cobaltStop2 = document.createElementNS("http://www.w3.org/2000/svg", "stop");
         cobaltStop2.setAttribute("offset", "100%");
-        cobaltStop2.setAttribute("stop-color", "#6b8299"); // Deeper blue-gray
+        cobaltStop2.setAttribute("stop-color", "#6b8299");
         cobaltStop2.setAttribute("stop-opacity", "1");
         
         cobaltGradient.appendChild(cobaltStop1);
@@ -116,7 +314,6 @@
         defs.appendChild(cobaltGradient);
       }
 
-      // Gold Plated Gradient
       if (!svg.querySelector('#gold-plated-gradient')) {
         const goldPlatedGradient = document.createElementNS("http://www.w3.org/2000/svg", "linearGradient");
         goldPlatedGradient.setAttribute("id", "gold-plated-gradient");
@@ -127,12 +324,12 @@
         
         const goldPlatedStop1 = document.createElementNS("http://www.w3.org/2000/svg", "stop");
         goldPlatedStop1.setAttribute("offset", "0%");
-        goldPlatedStop1.setAttribute("stop-color", "#f0e7b7"); // Pale creamy yellow
+        goldPlatedStop1.setAttribute("stop-color", "#f0e7b7");
         goldPlatedStop1.setAttribute("stop-opacity", "1");
         
         const goldPlatedStop2 = document.createElementNS("http://www.w3.org/2000/svg", "stop");
         goldPlatedStop2.setAttribute("offset", "100%");
-        goldPlatedStop2.setAttribute("stop-color", "#d4c085"); // Slightly deeper chalky yellow
+        goldPlatedStop2.setAttribute("stop-color", "#d4c085");
         goldPlatedStop2.setAttribute("stop-opacity", "1");
         
         goldPlatedGradient.appendChild(goldPlatedStop1);
@@ -140,7 +337,6 @@
         defs.appendChild(goldPlatedGradient);
       }
 
-      // Solid Gold Gradient
       if (!svg.querySelector('#solid-gold-gradient')) {
         const solidGoldGradient = document.createElementNS("http://www.w3.org/2000/svg", "linearGradient");
         solidGoldGradient.setAttribute("id", "solid-gold-gradient");
@@ -151,12 +347,12 @@
         
         const solidGoldStop1 = document.createElementNS("http://www.w3.org/2000/svg", "stop");
         solidGoldStop1.setAttribute("offset", "0%");
-        solidGoldStop1.setAttribute("stop-color", "#f7e788"); // Bright gold
+        solidGoldStop1.setAttribute("stop-color", "#f7e788");
         solidGoldStop1.setAttribute("stop-opacity", "1");
         
         const solidGoldStop2 = document.createElementNS("http://www.w3.org/2000/svg", "stop");
         solidGoldStop2.setAttribute("offset", "100%");
-        solidGoldStop2.setAttribute("stop-color", "#d4af37"); // Deep rich gold
+        solidGoldStop2.setAttribute("stop-color", "#d4af37");
         solidGoldStop2.setAttribute("stop-opacity", "1");
         
         solidGoldGradient.appendChild(solidGoldStop1);
@@ -215,7 +411,10 @@
       currentFillColor = MATERIAL_FILL_COLORS[selected];
       document.querySelectorAll('.interactive-path').forEach(path => {
         const id = path.dataset.tooth;
-        if (selectedTeeth.has(id)) path.setAttribute('fill', currentFillColor);
+        if (selectedTeeth.has(id)) {
+          path.setAttribute('fill', currentFillColor);
+          path.classList.add('selected');
+        }
       });
     });
 
@@ -232,19 +431,31 @@
 
     function initToothInteractivity() {
       document.querySelectorAll('.interactive-path').forEach(path => {
-        path.addEventListener('click', () => {
-          const toothId = path.dataset.tooth;
-          const isSelected = selectedTeeth.has(toothId);
-          path.setAttribute('fill', isSelected ? 'transparent' : currentFillColor);
-          if (isSelected) {
-            selectedTeeth.delete(toothId);
-            document.getElementById(`control-${toothId}`)?.remove();
-          } else {
-            selectedTeeth.set(toothId, []);
-            addToothControl(toothId);
+        path.setAttribute('tabindex', '0'); // Make focusable
+        path.setAttribute('aria-label', `Tooth ${path.dataset.tooth}`); // ARIA label
+        path.addEventListener('click', handleToothInteraction);
+        path.addEventListener('keypress', (e) => {
+          if (e.key === 'Enter' || e.key === ' ') {
+            e.preventDefault();
+            handleToothInteraction(e);
           }
         });
       });
+    }
+
+    function handleToothInteraction(e) {
+      const path = e.target;
+      const toothId = path.dataset.tooth;
+      const isSelected = selectedTeeth.has(toothId);
+      path.setAttribute('fill', isSelected ? 'transparent' : currentFillColor);
+      path.classList.toggle('selected', !isSelected);
+      if (isSelected) {
+        selectedTeeth.delete(toothId);
+        document.getElementById(`control-${toothId}`)?.remove();
+      } else {
+        selectedTeeth.set(toothId, []);
+        addToothControl(toothId);
+      }
     }
 
     function addSVGLabels() {
@@ -279,7 +490,7 @@
         <label>${toothId} Add-Ons
           <div class="addon-buttons" id="addon-buttons-${toothId}">
             ${Object.entries(ADD_ONS).map(([key, price]) => `
-              <button class="addon-button" data-addon="${key}" onclick="toggleAddOn('${toothId}', '${key}')">
+              <button class="addon-button" data-addon="${key}" onclick="toggleAddOn('${toothId}', '${key}')" aria-label="${key.replace('_', ' ')} add-on, €${price}">
                 ${key.replace('_', ' ')} (€${price})
               </button>
             `).join('')}
@@ -303,11 +514,23 @@
       selectedTeeth.set(toothId, addOns);
     }
 
-    function updateQuote() {
+    async function updateQuote() {
+      const generateBtn = document.getElementById('generateQuoteBtn');
+      generateBtn.classList.add('loading');
+      generateBtn.disabled = true;
+
+      // Simulate processing
+      await new Promise(resolve => setTimeout(resolve, 1000));
+
       const clientName = document.getElementById('clientName').value || 'Unnamed Client';
       const material = document.getElementById('material').value;
       const toothCount = selectedTeeth.size;
-      if (!toothCount) return alert('Please select at least one tooth');
+      if (!toothCount) {
+        generateBtn.classList.remove('loading');
+        generateBtn.classList.add('shake');
+        generateBtn.disabled = false;
+        return alert('Please select at least one tooth');
+      }
 
       let totalSalePrice = 0;
       const addOnSummary = [];
@@ -360,16 +583,32 @@ Deposit Due (50%): €${depositDue}
 
       window.lastQuoteText = quoteText;
       document.getElementById('copyQuoteBtn').style.display = 'block';
+      generateBtn.classList.remove('loading');
+      generateBtn.disabled = false;
     }
 
-    document.getElementById('copyQuoteBtn').addEventListener('click', () => {
-      if (!window.lastQuoteText) return alert("No quote available to copy yet.");
-      navigator.clipboard.writeText(window.lastQuoteText)
-        .then(() => alert('Quote copied to clipboard! \nSend this to @Sweet.Toof.cy on Instagram by clicking the logo at the top of the page.'))
-        .catch(err => {
-          console.error('Copy failed:', err);
-          alert('Failed to copy the quote.');
-        });
+    document.getElementById('copyQuoteBtn').addEventListener('click', async () => {
+      const copyBtn = document.getElementById('copyQuoteBtn');
+      copyBtn.classList.add('loading');
+      copyBtn.disabled = true;
+
+      if (!window.lastQuoteText) {
+        copyBtn.classList.remove('loading');
+        copyBtn.disabled = false;
+        return alert("No quote available to copy yet.");
+      }
+
+      try {
+        await navigator.clipboard.writeText(window.lastQuoteText);
+        copyBtn.classList.remove('loading');
+        copyBtn.classList.add('copied');
+        alert('Quote copied to clipboard! \nSend this to @Sweet.Toof.cy on Instagram by clicking the logo at the top of the page.');
+      } catch (err) {
+        console.error('Copy failed:', err);
+        alert('Failed to copy the quote.');
+      } finally {
+        copyBtn.disabled = false;
+      }
     });
   </script>
 </body>
