@@ -131,16 +131,20 @@
       min-height: 60px;
       display: flex;
       flex-direction: column;
-      justify-content: center;
       align-items: center;
+      justify-content: center;
       transition: background 0.3s ease, color 0.3s ease;
-      position: relative; /* For positioning the preview icon */
+    }
+    .addon-button-content {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      text-align: center;
     }
     .addon-button .addon-name {
       display: block;
       font-size: 0.85rem;
       line-height: 1.2;
-      text-align: center;
     }
     .addon-button .addon-price {
       display: block;
@@ -166,9 +170,6 @@
       background: #004a9f;
     }
     .addon-preview-icon {
-      position: absolute;
-      bottom: 4px;
-      right: 4px;
       width: 16px;
       height: 16px;
       padding: 10px; /* Ensures touch target is at least 44x44px */
@@ -416,7 +417,7 @@
         const solidGoldGradient = document.createElementNS("http://www.w3.org/2000/svg", "linearGradient");
         solidGoldGradient.setAttribute("id", "solid-gold-gradient");
         solidGoldGradient.setAttribute("x1", "0%");
-        solidGoldGradient.setAttribute("y1", "0%");
+        goldGradient.setAttribute("y1", "0%");
         solidGoldGradient.setAttribute("x2", "100%");
         solidGoldGradient.setAttribute("y2", "100%");
         
@@ -568,11 +569,13 @@
           <div class="addon-buttons" id="addon-buttons-${toothId}">
             ${Object.entries(ADD_ONS).map(([key, price]) => `
               <button class="addon-button" data-addon="${key}" onclick="toggleAddOn('${toothId}', '${key}')" aria-label="${capitalizeWords(key.replace('_', ' '))} add-on, €${price}">
-                <span class="addon-name">${capitalizeWords(key.replace('_', ' '))}</span>
+                <div class="addon-button-content">
+                  <span class="addon-name">${capitalizeWords(key.replace('_', ' '))}</span>
+                  <svg class="addon-preview-icon" onclick="event.stopPropagation(); openGallery('${key}');" aria-label="View ${capitalizeWords(key.replace('_', ' '))} render" viewBox="0 0 24 24">
+                    <path d="M12 4.5C7 4.5 2.73 7.61 1 12c1.73 4.39 6 7.5 11 7.5s9.27-3.11 11-7.5c-1.73-4.39-6-7.5-11-7.5zM12 17c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5zm0-8c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3z"/>
+                  </svg>
+                </div>
                 <span class="addon-price">€${price}</span>
-                <svg class="addon-preview-icon" onclick="event.stopPropagation(); openGallery('${key}');" aria-label="View ${capitalizeWords(key.replace('_', ' '))} render" viewBox="0 0 24 24">
-                  <path d="M12 4.5C7 4.5 2.73 7.61 1 12c1.73 4.39 6 7.5 11 7.5s9.27-3.11 11-7.5c-1.73-4.39-6-7.5-11-7.5zM12 17c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5zm0-8c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3z"/>
-                </svg>
               </button>
             `).join('')}
           </div>
