@@ -490,7 +490,7 @@
         const res = await fetch('/Sweet-Toof-Quote/teeth-map.svg');
         const svgText = await res.text();
         svgContainer.innerHTML = svgText;
-        svgContainer.querySelector('svg')?.setAttribute('viewBox', '0 300 1080 400');
+        svgContainer.querySelector('svg')?.setAttribute('viewBox', '0 300 1080 20');
         injectMaterialGradients();
         addSVGLabels();
         initToothInteractivity();
