@@ -134,6 +134,7 @@
       justify-content: center;
       align-items: center;
       transition: background 0.3s ease, color 0.3s ease;
+      position: relative; /* For positioning the preview icon */
     }
     .addon-button .addon-name {
       display: block;
@@ -163,6 +164,27 @@
     }
     .addon-button.selected:hover {
       background: #004a9f;
+    }
+    .addon-preview-icon {
+      position: absolute;
+      top: 50%;
+      right: 4px;
+      transform: translateY(-50%);
+      width: 24px;
+      height: 24px;
+      padding: 10px; /* Ensures touch target is at least 44x44px */
+      cursor: pointer;
+      fill: #666;
+      transition: fill 0.3s ease;
+    }
+    .addon-button.selected .addon-preview-icon {
+      fill: #e0e0e0;
+    }
+    .addon-preview-icon:hover {
+      fill: #005bbb;
+    }
+    .addon-button.selected .addon-preview-icon:hover {
+      fill: #fff;
     }
     button {
       padding: 8px 16px;
@@ -206,6 +228,84 @@
     footer a:hover {
       color: #004a9f;
     }
+    /* Modal Styles */
+    .gallery-modal {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.8);
+      z-index: 1000;
+      justify-content: center;
+      align-items: center;
+      padding: 1rem;
+      box-sizing: border-box;
+    }
+    .gallery-modal-content {
+      position: relative;
+      max-width: 90%;
+      max-height: 90%;
+      text-align: center;
+    }
+    .gallery-modal img {
+      max-width: 100%;
+      max-height: 60vh;
+      object-fit: contain;
+      border-radius: 8px;
+    }
+    .gallery-modal-caption {
+      color: #fff;
+      margin-top: 1rem;
+      font-size: 1rem;
+    }
+    .gallery-modal-close {
+      position: absolute;
+      top: -40px;
+      right: -10px;
+      background: none;
+      border: none;
+      color: #fff;
+      font-size: 2rem;
+      cursor: pointer;
+      padding: 10px;
+    }
+    .gallery-modal-nav {
+      position: absolute;
+      top: 50%;
+      transform: translateY(-50%);
+      background: rgba(0, 0, 0, 0.5);
+      border: none;
+      color: #fff;
+      font-size: 2rem;
+      padding: 1rem;
+      cursor: pointer;
+      border-radius: 50%;
+    }
+    .gallery-modal-nav.prev {
+      left: 10px;
+    }
+    .gallery-modal-nav.next {
+      right: 10px;
+    }
+    @media (max-width: 600px) {
+      .gallery-modal img {
+        max-height: 50vh;
+      }
+      .gallery-modal-caption {
+        font-size: 0.9rem;
+      }
+      .gallery-modal-close {
+        top: 10px;
+        right: 10px;
+        font-size: 1.5rem;
+      }
+      .gallery-modal-nav {
+        font-size: 1.5rem;
+        padding: 0.75rem;
+      }
+    }
   </style>
 </head>
 <body>
@@ -234,6 +334,16 @@
       <button id="generateQuoteBtn" aria-label="Generate Quote">Generate Quote</button>
       <div class="results" id="results" style="display:none;"></div>
       <button id="copyQuoteBtn" style="margin-top: 10px; display: none;" aria-label="Copy Quote">📋 Copy My Quote</button>
+    </div>
+  </div>
+  <!-- Gallery Modal -->
+  <div class="gallery-modal" id="galleryModal">
+    <div class="gallery-modal-content">
+      <button class="gallery-modal-close" aria-label="Close gallery">&times;</button>
+      <button class="gallery-modal-nav prev" aria-label="Previous add-on">&#10094;</button>
+      <img id="galleryImage" src="" alt="">
+      <div class="gallery-modal-caption" id="galleryCaption"></div>
+      <button class="gallery-modal-nav next" aria-label="Next add-on">&#10095;</button>
     </div>
   </div>
   <footer>
@@ -344,6 +454,14 @@
       custom_design: 100
     };
 
+    const ADD_ONS_ARRAY = Object.keys(ADD_ONS); // Array of add-on keys for navigation
+
+    const ADD_ON_IMAGES = {};
+    Object.entries(ADD_ONS).forEach(([key, price]) => {
+      const imageName = key.replace('_', '-') + '-render.jpg';
+      ADD_ON_IMAGES[key] = `images/addons/${imageName}`;
+    });
+
     const CAST_COST_PER_TOOTH = 20;
     const IMPRESSION_COST = 3;
     const selectedTeeth = new Map();
@@ -446,6 +564,9 @@
               <button class="addon-button" data-addon="${key}" onclick="toggleAddOn('${toothId}', '${key}')" aria-label="${capitalizeWords(key.replace('_', ' '))} add-on, €${price}">
                 <span class="addon-name">${capitalizeWords(key.replace('_', ' '))}</span>
                 <span class="addon-price">€${price}</span>
+                <svg class="addon-preview-icon" onclick="event.stopPropagation(); openGallery('${key}');" aria-label="View ${capitalizeWords(key.replace('_', ' '))} render" viewBox="0 0 24 24">
+                  <path d="M12 4.5C7 4.5 2.73 7.61 1 12c1.73 4.39 6 7.5 11 7.5s9.27-3.11 11-7.5c-1.73-4.39-6-7.5-11-7.5zM12 17c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5zm0-8c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3z"/>
+                </svg>
               </button>
             `).join('')}
           </div>
@@ -536,6 +657,85 @@ Deposit Due (50%): €${depositDue}
           console.error('Copy failed:', err);
           alert('Failed to copy the quote.');
         });
+    });
+
+    // Gallery Modal Logic
+    let currentAddOnIndex = 0;
+
+    function openGallery(addonKey) {
+      currentAddOnIndex = ADD_ONS_ARRAY.indexOf(addonKey);
+      updateGalleryModal();
+      const modal = document.getElementById('galleryModal');
+      modal.style.display = 'flex';
+      document.body.style.overflow = 'hidden'; // Prevent scrolling
+    }
+
+    function closeGallery() {
+      const modal = document.getElementById('galleryModal');
+      modal.style.display = 'none';
+      document.body.style.overflow = 'auto'; // Restore scrolling
+    }
+
+    function updateGalleryModal() {
+      const addonKey = ADD_ONS_ARRAY[currentAddOnIndex];
+      const imageSrc = ADD_ON_IMAGES[addonKey];
+      const addonName = capitalizeWords(addonKey.replace('_', ' '));
+      const price = ADD_ONS[addonKey];
+
+      const imageElement = document.getElementById('galleryImage');
+      const captionElement = document.getElementById('galleryCaption');
+
+      imageElement.src = imageSrc;
+      imageElement.alt = `High-quality render of ${addonName} add-on`;
+      captionElement.textContent = `${addonName} (€${price})`;
+    }
+
+    document.querySelector('.gallery-modal-close').addEventListener('click', closeGallery);
+
+    document.querySelector('.gallery-modal-nav.prev').addEventListener('click', () => {
+      currentAddOnIndex = (currentAddOnIndex - 1 + ADD_ONS_ARRAY.length) % ADD_ONS_ARRAY.length;
+      updateGalleryModal();
+    });
+
+    document.querySelector('.gallery-modal-nav.next').addEventListener('click', () => {
+      currentAddOnIndex = (currentAddOnIndex + 1) % ADD_ONS_ARRAY.length;
+      updateGalleryModal();
+    });
+
+    // Swipe navigation for mobile
+    let touchStartX = 0;
+    let touchEndX = 0;
+
+    document.getElementById('galleryModal').addEventListener('touchstart', e => {
+      touchStartX = e.changedTouches[0].screenX;
+    });
+
+    document.getElementById('galleryModal').addEventListener('touchend', e => {
+      touchEndX = e.changedTouches[0].screenX;
+      if (touchStartX - touchEndX > 50) {
+        // Swipe left (next)
+        currentAddOnIndex = (currentAddOnIndex + 1) % ADD_ONS_ARRAY.length;
+        updateGalleryModal();
+      } else if (touchEndX - touchStartX > 50) {
+        // Swipe right (prev)
+        currentAddOnIndex = (currentAddOnIndex - 1 + ADD_ONS_ARRAY.length) % ADD_ONS_ARRAY.length;
+        updateGalleryModal();
+      }
+    });
+
+    // Keyboard navigation
+    document.addEventListener('keydown', e => {
+      if (document.getElementById('galleryModal').style.display === 'flex') {
+        if (e.key === 'Escape') {
+          closeGallery();
+        } else if (e.key === 'ArrowLeft') {
+          currentAddOnIndex = (currentAddOnIndex - 1 + ADD_ONS_ARRAY.length) % ADD_ONS_ARRAY.length;
+          updateGalleryModal();
+        } else if (e.key === 'ArrowRight') {
+          currentAddOnIndex = (currentAddOnIndex + 1) % ADD_ONS_ARRAY.length;
+          updateGalleryModal();
+        }
+      }
     });
   </script>
 </body>
