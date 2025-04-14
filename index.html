@@ -128,13 +128,13 @@
       font-size: 0.85rem;
       font-weight: 400;
       width: 100%;
-      min-height: 80px; /* Increased from 60px to 80px */
+      min-height: 80px;
       display: flex;
       flex-direction: column;
       align-items: center;
       justify-content: center;
       transition: background 0.3s ease, color 0.3s ease;
-      position: relative; /* For positioning the preview icon */
+      position: relative;
     }
     .addon-button .addon-name {
       display: block;
@@ -171,7 +171,7 @@
       right: 4px;
       width: 16px;
       height: 16px;
-      padding: 10px; /* Ensures touch target is at least 44x44px */
+      padding: 10px;
       cursor: pointer;
       fill: #666;
       transition: fill 0.3s ease;
@@ -184,6 +184,12 @@
     }
     .addon-button.selected .addon-preview-icon:hover {
       fill: #fff;
+    }
+    .hint-text {
+      font-size: 0.75rem;
+      font-style: italic;
+      color: #666;
+      margin-left: 5px;
     }
     button {
       padding: 8px 16px;
@@ -227,7 +233,6 @@
     footer a:hover {
       color: #004a9f;
     }
-    /* Modal Styles */
     .gallery-modal {
       display: none;
       position: fixed;
@@ -283,7 +288,7 @@
       border: none;
       color: #fff;
       font-size: 1.2rem;
-      padding: 10px 15px; /* Ensures touch target is at least 44x44px */
+      padding: 10px 15px;
       cursor: pointer;
       transition: color 0.3s ease;
     }
@@ -340,15 +345,14 @@
       <button id="copyQuoteBtn" style="margin-top: 10px; display: none;" aria-label="Copy Quote">📋 Copy My Quote</button>
     </div>
   </div>
-  <!-- Gallery Modal -->
   <div class="gallery-modal" id="galleryModal">
     <div class="gallery-modal-content">
       <button class="gallery-modal-close" aria-label="Close gallery">×</button>
       <img id="galleryImage" src="" alt="">
       <div class="gallery-modal-caption" id="galleryCaption"></div>
       <div class="gallery-modal-nav-container">
-        <button class="gallery-modal-nav prev" aria-label="Previous add-on"><</button>
-        <button class="gallery-modal-nav next" aria-label="Next add-on">></button>
+        <button class="gallery-modal-nav prev" aria-label="Previous add-on">&lt;</button>
+        <button class="gallery-modal-nav next" aria-label="Next add-on">&gt;</button>
       </div>
     </div>
   </div>
@@ -460,7 +464,7 @@
       custom_design: 100
     };
 
-    const ADD_ONS_ARRAY = Object.keys(ADD_ONS); // Array of add-on keys for navigation
+    const ADD_ONS_ARRAY = Object.keys(ADD_ONS);
 
     const ADD_ON_IMAGES = {};
     Object.entries(ADD_ONS).forEach(([key, price]) => {
@@ -473,7 +477,6 @@
     const selectedTeeth = new Map();
     let currentFillColor = MATERIAL_FILL_COLORS['cobalt_chrome'];
 
-    // Helper function to capitalize the start of each word
     function capitalizeWords(str) {
       return str
         .split(' ')
@@ -564,7 +567,7 @@
       div.id = `control-${toothId}`;
       div.className = 'add-on-group';
       div.innerHTML = `
-        <label>${toothId} Add-Ons
+        <label>${toothId} Add-Ons <span class="hint-text">(Preview add-ons with eye icon)</span>
           <div class="addon-buttons" id="addon-buttons-${toothId}">
             ${Object.entries(ADD_ONS).map(([key, price]) => `
               <button class="addon-button" data-addon="${key}" onclick="toggleAddOn('${toothId}', '${key}')" aria-label="${capitalizeWords(key.replace('_', ' '))} add-on, €${price}">
@@ -665,7 +668,6 @@ Deposit Due (50%): €${depositDue}
         });
     });
 
-    // Gallery Modal Logic
     let currentAddOnIndex = 0;
 
     function openGallery(addonKey) {
@@ -673,13 +675,13 @@ Deposit Due (50%): €${depositDue}
       updateGalleryModal();
       const modal = document.getElementById('galleryModal');
       modal.style.display = 'flex';
-      document.body.style.overflow = 'hidden'; // Prevent scrolling
+      document.body.style.overflow = 'hidden';
     }
 
     function closeGallery() {
       const modal = document.getElementById('galleryModal');
       modal.style.display = 'none';
-      document.body.style.overflow = 'auto'; // Restore scrolling
+      document.body.style.overflow = 'auto';
     }
 
     function updateGalleryModal() {
@@ -708,7 +710,6 @@ Deposit Due (50%): €${depositDue}
       updateGalleryModal();
     });
 
-    // Swipe navigation for mobile
     let touchStartX = 0;
     let touchEndX = 0;
 
@@ -719,17 +720,14 @@ Deposit Due (50%): €${depositDue}
     document.getElementById('galleryModal').addEventListener('touchend', e => {
       touchEndX = e.changedTouches[0].screenX;
       if (touchStartX - touchEndX > 50) {
-        // Swipe left (next)
         currentAddOnIndex = (currentAddOnIndex + 1) % ADD_ONS_ARRAY.length;
         updateGalleryModal();
       } else if (touchEndX - touchStartX > 50) {
-        // Swipe right (prev)
         currentAddOnIndex = (currentAddOnIndex - 1 + ADD_ONS_ARRAY.length) % ADD_ONS_ARRAY.length;
         updateGalleryModal();
       }
     });
 
-    // Keyboard navigation
     document.addEventListener('keydown', e => {
       if (document.getElementById('galleryModal').style.display === 'flex') {
         if (e.key === 'Escape') {
