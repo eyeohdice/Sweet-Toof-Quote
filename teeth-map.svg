@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <svg
    width="1080"
-   height="1080"
-   viewBox="0 0 1080 1080"
+   height="500"
+   viewBox="0 0 1080 500"
    version="1.1"
    id="svg1"
    sodipodi:docname="teeth-map.svg"
@@ -25,9 +25,9 @@
      inkscape:pageopacity="0.0"
      inkscape:pagecheckerboard="0"
      inkscape:deskcolor="#d1d1d1"
-     inkscape:zoom="0.74722222"
-     inkscape:cx="540"
-     inkscape:cy="431.59851"
+     inkscape:zoom="0.5283659"
+     inkscape:cx="487.35166"
+     inkscape:cy="576.30517"
      inkscape:window-width="1920"
      inkscape:window-height="1009"
      inkscape:window-x="-8"
@@ -38,13 +38,14 @@
        x="0"
        y="0"
        width="1080"
-       height="1080"
+       height="500"
        id="page2"
        margin="0"
        bleed="0" />
   </sodipodi:namedview>
   <g
-     id="layer1">
+     id="layer1"
+     transform="translate(2.07706,-239.02555)">
     <!-- Outline path -->
     <path
        id="path1"
@@ -117,111 +118,111 @@
   <text
      xml:space="preserve"
      style="font-size:49.136px;font-family:'KC Acme Hand';-inkscape-font-specification:'KC Acme Hand';text-align:start;writing-mode:lr-tb;direction:ltr;text-anchor:start;fill:#b0d5ee;stroke-width:0"
-     x="51.568432"
-     y="613.18066"
+     x="53.645493"
+     y="374.15509"
      id="text1"><tspan
        sodipodi:role="line"
        id="tspan1"
        style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:49.136px;font-family:'Franklin Gothic Medium';-inkscape-font-specification:'Franklin Gothic Medium, ';fill:#000000;stroke-width:0"
-       x="51.568432"
-       y="613.18066">R1</tspan></text>
+       x="53.645493"
+       y="374.15509">R1</tspan></text>
   <text
      xml:space="preserve"
      style="font-size:49.136px;font-family:'KC Acme Hand';-inkscape-font-specification:'KC Acme Hand';text-align:start;writing-mode:lr-tb;direction:ltr;text-anchor:start;fill:#b0d5ee;stroke-width:0"
-     x="125.27275"
-     y="613.18066"
+     x="127.34981"
+     y="374.15509"
      id="text2"><tspan
        sodipodi:role="line"
        id="tspan2"
        style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:49.136px;font-family:'Franklin Gothic Medium';-inkscape-font-specification:'Franklin Gothic Medium, ';fill:#000000;stroke-width:0"
-       x="125.27275"
-       y="613.18066">R2</tspan></text>
+       x="127.34981"
+       y="374.15509">R2</tspan></text>
   <text
      xml:space="preserve"
      style="font-size:49.136px;font-family:'KC Acme Hand';-inkscape-font-specification:'KC Acme Hand';text-align:start;writing-mode:lr-tb;direction:ltr;text-anchor:start;fill:#b0d5ee;stroke-width:0"
-     x="212.79642"
-     y="613.18066"
+     x="214.87347"
+     y="374.15509"
      id="text3"><tspan
        sodipodi:role="line"
        id="tspan3"
        style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:49.136px;font-family:'Franklin Gothic Medium';-inkscape-font-specification:'Franklin Gothic Medium, ';fill:#000000;stroke-width:0"
-       x="212.79642"
-       y="613.18066">R3</tspan></text>
+       x="214.87347"
+       y="374.15509">R3</tspan></text>
   <text
      xml:space="preserve"
      style="font-size:49.136px;font-family:'KC Acme Hand';-inkscape-font-specification:'KC Acme Hand';text-align:start;writing-mode:lr-tb;direction:ltr;text-anchor:start;fill:#b0d5ee;stroke-width:0"
-     x="314.13971"
-     y="613.18066"
+     x="316.2168"
+     y="374.15509"
      id="text4"><tspan
        sodipodi:role="line"
        id="tspan4"
        style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:49.136px;font-family:'Franklin Gothic Medium';-inkscape-font-specification:'Franklin Gothic Medium, ';fill:#000000;stroke-width:0"
-       x="314.13971"
-       y="613.18066">R4</tspan></text>
+       x="316.2168"
+       y="374.15509">R4</tspan></text>
   <text
      xml:space="preserve"
      style="font-size:49.136px;font-family:'KC Acme Hand';-inkscape-font-specification:'KC Acme Hand';text-align:start;writing-mode:lr-tb;direction:ltr;text-anchor:start;fill:#b0d5ee;stroke-width:0"
-     x="438.51566"
-     y="613.18066"
+     x="440.59274"
+     y="374.15509"
      id="text5"><tspan
        sodipodi:role="line"
        id="tspan5"
        style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:49.136px;font-family:'Franklin Gothic Medium';-inkscape-font-specification:'Franklin Gothic Medium, ';fill:#000000;stroke-width:0"
-       x="438.51566"
-       y="613.18066">R5</tspan></text>
+       x="440.59274"
+       y="374.15509">R5</tspan></text>
   <text
      xml:space="preserve"
      style="font-size:49.136px;font-family:'KC Acme Hand';-inkscape-font-specification:'KC Acme Hand';text-align:start;writing-mode:lr-tb;direction:ltr;text-anchor:start;fill:#b0d5ee;stroke-width:0"
-     x="576.71094"
-     y="613.18066"
+     x="578.78802"
+     y="374.15509"
      id="text6"><tspan
        sodipodi:role="line"
        id="tspan6"
        style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:49.136px;font-family:'Franklin Gothic Medium';-inkscape-font-specification:'Franklin Gothic Medium, ';fill:#000000;stroke-width:0"
-       x="576.71094"
-       y="613.18066">L1</tspan></text>
+       x="578.78802"
+       y="374.15509">L1</tspan></text>
   <text
      xml:space="preserve"
      style="font-size:49.136px;font-family:'KC Acme Hand';-inkscape-font-specification:'KC Acme Hand';text-align:start;writing-mode:lr-tb;direction:ltr;text-anchor:start;fill:#b0d5ee;stroke-width:0"
-     x="701.08643"
-     y="613.18066"
+     x="703.16351"
+     y="374.15509"
      id="text7"><tspan
        sodipodi:role="line"
        id="tspan7"
        style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:49.136px;font-family:'Franklin Gothic Medium';-inkscape-font-specification:'Franklin Gothic Medium, ';fill:#000000;stroke-width:0"
-       x="701.08643"
-       y="613.18066">L2</tspan></text>
+       x="703.16351"
+       y="374.15509">L2</tspan></text>
   <text
      xml:space="preserve"
      style="font-size:49.136px;font-family:'KC Acme Hand';-inkscape-font-specification:'KC Acme Hand';text-align:start;writing-mode:lr-tb;direction:ltr;text-anchor:start;fill:#b0d5ee;stroke-width:0"
-     x="811.64124"
-     y="613.18066"
+     x="813.71832"
+     y="374.15509"
      id="text8"><tspan
        sodipodi:role="line"
        id="tspan8"
        style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:49.136px;font-family:'Franklin Gothic Medium';-inkscape-font-specification:'Franklin Gothic Medium, ';fill:#000000;stroke-width:0"
-       x="811.64124"
-       y="613.18066">L3</tspan></text>
+       x="813.71832"
+       y="374.15509">L3</tspan></text>
   <text
      xml:space="preserve"
      style="font-size:49.136px;font-family:'KC Acme Hand';-inkscape-font-specification:'KC Acme Hand';text-align:start;writing-mode:lr-tb;direction:ltr;text-anchor:start;fill:#b0d5ee;stroke-width:0"
-     x="899.16388"
-     y="613.18066"
+     x="901.24097"
+     y="374.15509"
      id="text9"><tspan
        sodipodi:role="line"
        id="tspan9"
        style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:49.136px;font-family:'Franklin Gothic Medium';-inkscape-font-specification:'Franklin Gothic Medium, ';fill:#000000;stroke-width:0"
-       x="899.16388"
-       y="613.18066">L4</tspan></text>
+       x="901.24097"
+       y="374.15509">L4</tspan></text>
   <text
      xml:space="preserve"
      style="font-size:49.136px;font-family:'KC Acme Hand';-inkscape-font-specification:'KC Acme Hand';text-align:start;writing-mode:lr-tb;direction:ltr;text-anchor:start;fill:#b0d5ee;stroke-width:0"
-     x="972.86694"
-     y="613.18066"
+     x="974.94403"
+     y="374.15509"
      id="text10"><tspan
        sodipodi:role="line"
        id="tspan10"
        style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:49.136px;font-family:'Franklin Gothic Medium';-inkscape-font-specification:'Franklin Gothic Medium, ';fill:#000000;stroke-width:0"
-       x="972.86694"
-       y="613.18066">L5</tspan></text>
+       x="974.94403"
+       y="374.15509">L5</tspan></text>
 </svg>
