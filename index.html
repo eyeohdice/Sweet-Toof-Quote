@@ -131,15 +131,15 @@
       min-height: 60px;
       display: flex;
       flex-direction: column;
-      justify-content: center; /* Center vertically */
-      align-items: center; /* Center horizontally */
+      justify-content: center;
+      align-items: center;
       transition: background 0.3s ease, color 0.3s ease;
     }
     .addon-button .addon-name {
       display: block;
       font-size: 0.85rem;
       line-height: 1.2;
-      text-align: center; /* Ensure text is centered */
+      text-align: center;
     }
     .addon-button .addon-price {
       display: block;
@@ -147,7 +147,7 @@
       color: #666;
       margin-top: 2px;
       line-height: 1.2;
-      text-align: center; /* Ensure text is centered */
+      text-align: center;
     }
     .addon-button.selected {
       background: #005bbb;
@@ -349,6 +349,14 @@
     const selectedTeeth = new Map();
     let currentFillColor = MATERIAL_FILL_COLORS['cobalt_chrome'];
 
+    // Helper function to capitalize the start of each word
+    function capitalizeWords(str) {
+      return str
+        .split(' ')
+        .map(word => word.charAt(0).toUpperCase() + word.slice(1).toLowerCase())
+        .join(' ');
+    }
+
     document.addEventListener('DOMContentLoaded', async () => {
       const svgContainer = document.getElementById('svgContainer');
       try {
@@ -435,8 +443,8 @@
         <label>${toothId} Add-Ons
           <div class="addon-buttons" id="addon-buttons-${toothId}">
             ${Object.entries(ADD_ONS).map(([key, price]) => `
-              <button class="addon-button" data-addon="${key}" onclick="toggleAddOn('${toothId}', '${key}')" aria-label="${key.replace('_', ' ')} add-on, €${price}">
-                <span class="addon-name">${key.replace('_', ' ')}</span>
+              <button class="addon-button" data-addon="${key}" onclick="toggleAddOn('${toothId}', '${key}')" aria-label="${capitalizeWords(key.replace('_', ' '))} add-on, €${price}">
+                <span class="addon-name">${capitalizeWords(key.replace('_', ' '))}</span>
                 <span class="addon-price">€${price}</span>
               </button>
             `).join('')}
@@ -474,7 +482,7 @@
         const addOnCost = addOns.reduce((sum, key) => sum + ADD_ONS[key], 0);
         const toothPrice = BASE_PRICES[material] + addOnCost;
         totalSalePrice += toothPrice;
-        addOnSummary.push(`${toothId}: ${addOns.length ? addOns.join(', ') : 'None'}`);
+        addOnSummary.push(`${toothId}: ${addOns.length ? addOns.map(addon => capitalizeWords(addon.replace('_', ' '))).join(', ') : 'None'}`);
         perToothBreakdown.push(`${toothId}: €${toothPrice} (${BASE_PRICES[material]} base + €${addOnCost} add-ons)`);
       });
 
