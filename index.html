@@ -568,7 +568,7 @@
       labels.forEach(({ id, x, y }) => {
         const text = document.createElementNS("http://www.w3.org/2000/svg", "text");
         text.setAttribute('x', `${(x / 1080) * 100}%`);
-        text.setAttribute('y', `${(y / 500) * 100}%`);
+        text.setAttribute('y', `${(y / 1080) * 100}%`);
         text.setAttribute('font-size', '16');
         text.setAttribute('font-weight', 'bold');
         text.setAttribute('text-anchor', 'middle');
