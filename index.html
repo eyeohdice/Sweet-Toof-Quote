@@ -248,6 +248,9 @@
       max-width: 90%;
       max-height: 90%;
       text-align: center;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
     }
     .gallery-modal img {
       max-width: 100%;
@@ -271,23 +274,22 @@
       cursor: pointer;
       padding: 10px;
     }
+    .gallery-modal-nav-container {
+      display: flex;
+      gap: 2rem;
+      margin-top: 1rem;
+    }
     .gallery-modal-nav {
-      position: absolute;
-      top: 50%;
-      transform: translateY(-50%);
-      background: rgba(0, 0, 0, 0.5);
+      background: none;
       border: none;
       color: #fff;
-      font-size: 2rem;
-      padding: 1rem;
+      font-size: 1.2rem;
+      padding: 10px 15px; /* Ensures touch target is at least 44x44px */
       cursor: pointer;
-      border-radius: 50%;
+      transition: color 0.3s ease;
     }
-    .gallery-modal-nav.prev {
-      left: 10px;
-    }
-    .gallery-modal-nav.next {
-      right: 10px;
+    .gallery-modal-nav:hover {
+      color: #005bbb;
     }
     @media (max-width: 600px) {
       .gallery-modal img {
@@ -302,8 +304,11 @@
         font-size: 1.5rem;
       }
       .gallery-modal-nav {
-        font-size: 1.5rem;
-        padding: 0.75rem;
+        font-size: 1rem;
+        padding: 10px 15px;
+      }
+      .gallery-modal-nav-container {
+        gap: 1.5rem;
       }
     }
   </style>
@@ -312,7 +317,7 @@
   <button class="secret-btn" onclick="askPassword()" aria-label="Access secret info"></button>
   <header>
     <a href="https://www.instagram.com/Sweet.Toof.cy" target="_blank">
-      <img src="sweet-toof-logo.png" alt="Sweet Toof Logo" />
+      <img src="/Sweet-Toof-Quote/sweet-toof-logo.png" alt="Sweet Toof Logo" />
     </a>
   </header>
   <div class="container">
@@ -339,11 +344,13 @@
   <!-- Gallery Modal -->
   <div class="gallery-modal" id="galleryModal">
     <div class="gallery-modal-content">
-      <button class="gallery-modal-close" aria-label="Close gallery">&times;</button>
-      <button class="gallery-modal-nav prev" aria-label="Previous add-on">&#10094;</button>
+      <button class="gallery-modal-close" aria-label="Close gallery">×</button>
       <img id="galleryImage" src="" alt="">
       <div class="gallery-modal-caption" id="galleryCaption"></div>
-      <button class="gallery-modal-nav next" aria-label="Next add-on">&#10095;</button>
+      <div class="gallery-modal-nav-container">
+        <button class="gallery-modal-nav prev" aria-label="Previous add-on">&lt;</button>
+        <button class="gallery-modal-nav next" aria-label="Next add-on">&gt;</button>
+      </div>
     </div>
   </div>
   <footer>
@@ -459,7 +466,7 @@
     const ADD_ON_IMAGES = {};
     Object.entries(ADD_ONS).forEach(([key, price]) => {
       const imageName = key.replace('_', '-') + '-render.jpg';
-      ADD_ON_IMAGES[key] = `images/addons/${imageName}`;
+      ADD_ON_IMAGES[key] = `https://raw.githubusercontent.com/eyeohdice/Sweet-Toof-Quote/main/images/addons/${imageName}`;
     });
 
     const CAST_COST_PER_TOOTH = 20;
@@ -478,7 +485,7 @@
     document.addEventListener('DOMContentLoaded', async () => {
       const svgContainer = document.getElementById('svgContainer');
       try {
-        const res = await fetch('./teeth-map.svg');
+        const res = await fetch('/Sweet-Toof-Quote/teeth-map.svg');
         const svgText = await res.text();
         svgContainer.innerHTML = svgText;
         svgContainer.querySelector('svg')?.setAttribute('viewBox', '0 300 1080 400');
