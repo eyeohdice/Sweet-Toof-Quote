@@ -261,6 +261,7 @@
       max-height: 60vh;
       object-fit: contain;
       border-radius: 8px;
+      position: relative;
     }
     .gallery-modal-caption {
       color: #fff;
@@ -269,31 +270,48 @@
     }
     .gallery-modal-close {
       position: absolute;
-      top: -40px;
-      right: -10px;
+      top: 10px;
+      right: 10px;
       background: none;
       border: none;
       color: #fff;
-      font-size: 2rem;
+      font-size: 1.5rem;
       cursor: pointer;
-      padding: 10px;
+      z-index: 1001;
     }
     .gallery-modal-nav-container {
       display: flex;
-      gap: 2rem;
+      gap: 1rem;
       margin-top: 1rem;
+      align-items: center;
     }
     .gallery-modal-nav {
-      background: none;
-      border: none;
+      background: #005bbb;
       color: #fff;
-      font-size: 1.2rem;
-      padding: 10px 15px;
+      border: none;
+      border-radius: 5px;
+      padding: 8px 16px;
       cursor: pointer;
-      transition: color 0.3s ease;
+      font-weight: 600;
+      transition: background 0.3s ease;
+      font-size: 1rem;
     }
     .gallery-modal-nav:hover {
-      color: #005bbb;
+      background: #004a9f;
+    }
+    .gallery-modal-exit {
+      background: #005bbb;
+      color: #fff;
+      border: none;
+      border-radius: 5px;
+      padding: 8px 16px;
+      cursor: pointer;
+      font-weight: 600;
+      transition: background 0.3s ease;
+      font-size: 1rem;
+    }
+    .gallery-modal-exit:hover {
+      background: #004a9f;
     }
     @media (max-width: 600px) {
       .gallery-modal img {
@@ -307,12 +325,12 @@
         right: 10px;
         font-size: 1.5rem;
       }
-      .gallery-modal-nav {
-        font-size: 1rem;
-        padding: 10px 15px;
+      .gallery-modal-nav, .gallery-modal-exit {
+        font-size: 0.9rem;
+        padding: 6px 12px;
       }
       .gallery-modal-nav-container {
-        gap: 1.5rem;
+        gap: 0.5rem;
       }
     }
   </style>
@@ -351,8 +369,9 @@
       <img id="galleryImage" src="" alt="">
       <div class="gallery-modal-caption" id="galleryCaption"></div>
       <div class="gallery-modal-nav-container">
-        <button class="gallery-modal-nav prev" aria-label="Previous add-on"><</button>
-        <button class="gallery-modal-nav next" aria-label="Next add-on">></button>
+        <button class="gallery-modal-nav prev" aria-label="Previous add-on">Previous</button>
+        <button class="gallery-modal-exit" aria-label="Exit gallery">Exit</button>
+        <button class="gallery-modal-nav next" aria-label="Next add-on">Next</button>
       </div>
     </div>
   </div>
@@ -716,6 +735,7 @@ Deposit Due (50%): €${depositDue}
     }
 
     document.querySelector('.gallery-modal-close').addEventListener('click', closeGallery);
+    document.querySelector('.gallery-modal-exit').addEventListener('click', closeGallery);
 
     document.querySelector('.gallery-modal-nav.prev').addEventListener('click', () => {
       currentAddOnIndex = (currentAddOnIndex - 1 + ADD_ONS_ARRAY.length) % ADD_ONS_ARRAY.length;
