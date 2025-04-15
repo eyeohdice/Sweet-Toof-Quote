@@ -454,13 +454,13 @@
 
     const ADD_ONS = {
       plain_solid: 0,
-      cutout: 30,
       fang_shaping: 20,
+      open_face: 25,
+      cutout: 30,
+      texture_finish: 30,
+      window: 30,
       engraving: 40,
       gem_inlay: 75,
-      open_face: 25,
-      texture_finish: 30,
-      multi_color_plating: 30,
       custom_design: 100
     };
 
@@ -586,7 +586,7 @@
       div.innerHTML = `
         <label>${toothId} Add-Ons <span class="hint-text">(Preview add-ons with eye icon)</span>
           <div class="addon-buttons" id="addon-buttons-${toothId}">
-            ${Object.entries(ADD_ONS).map(([key, price]) => `
+            ${Object.entries(ADD_ONS).sort((a, b) => a[1] - b[1]).map(([key, price]) => `
               <button class="addon-button" data-addon="${key}" onclick="toggleAddOn('${toothId}', '${key}')" aria-label="${capitalizeWords(key.replace('_', ' '))} add-on, €${price}">
                 <span class="addon-name">${capitalizeWords(key.replace('_', ' '))}</span>
                 <span class="addon-price">€${price}</span>
