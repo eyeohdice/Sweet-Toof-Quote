@@ -270,14 +270,21 @@
     }
     .gallery-modal-close {
       position: absolute;
-      top: 10px;
-      right: 10px;
-      background: none;
+      top: -40px;
+      right: 0;
+      background: #005bbb;
       border: none;
       color: #fff;
-      font-size: 1.5rem;
+      font-size: 1.2rem;
+      font-weight: 600;
       cursor: pointer;
+      border-radius: 5px;
+      padding: 8px 12px;
+      transition: background 0.3s ease;
       z-index: 1001;
+    }
+    .gallery-modal-close:hover {
+      background: #004a9f;
     }
     .gallery-modal-nav-container {
       display: flex;
@@ -321,9 +328,9 @@
         font-size: 0.9rem;
       }
       .gallery-modal-close {
-        top: 10px;
-        right: 10px;
-        font-size: 1.5rem;
+        top: -40px;
+        font-size: 1rem;
+        padding: 6px 10px;
       }
       .gallery-modal-nav, .gallery-modal-exit {
         font-size: 0.9rem;
@@ -539,7 +546,6 @@
       }
     }
 
-    // Mapping function to swap L and R labels
     function mapToothId(toothId) {
       if (!toothId) return toothId;
       if (toothId.startsWith('L')) {
@@ -573,16 +579,16 @@
       const svg = document.querySelector('svg');
       if (!svg) return;
       const labels = [
-        { id: 'R1', x: 80, y: 580 },  // Was L1 (viewer's left, patient's right)
-        { id: 'R2', x: 150, y: 580 }, // Was L2
-        { id: 'R3', x: 230, y: 580 }, // Was L3
-        { id: 'R4', x: 330, y: 580 }, // Was L4
-        { id: 'R5', x: 460, y: 590 }, // Was L5
-        { id: 'L1', x: 610, y: 590 }, // Was R1 (viewer's right, patient's left)
-        { id: 'L2', x: 740, y: 580 }, // Was R2
-        { id: 'L3', x: 840, y: 580 }, // Was R3
-        { id: 'L4', x: 930, y: 580 }, // Was R4
-        { id: 'L5', x: 1000, y: 580 } // Was R5
+        { id: 'R1', x: 80, y: 580 },
+        { id: 'R2', x: 150, y: 580 },
+        { id: 'R3', x: 230, y: 580 },
+        { id: 'R4', x: 330, y: 580 },
+        { id: 'R5', x: 460, y: 590 },
+        { id: 'L1', x: 610, y: 590 },
+        { id: 'L2', x: 740, y: 580 },
+        { id: 'L3', x: 840, y: 580 },
+        { id: 'L4', x: 930, y: 580 },
+        { id: 'L5', x: 1000, y: 580 }
       ];
       labels.forEach(({ id, x, y }) => {
         const text = document.createElementNS("http://www.w3.org/2000/svg", "text");
