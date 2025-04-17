@@ -525,7 +525,16 @@
         .join(' ');
     }
 
+    // Preload all gallery images
+    function preloadImages() {
+      Object.values(ADD_ON_IMAGES).forEach(src => {
+        const img = new Image();
+        img.src = src;
+      });
+    }
+
     document.addEventListener('DOMContentLoaded', async () => {
+      preloadImages(); // Call the preload function on page load
       const svgContainer = document.getElementById('svgContainer');
       try {
         const res = await fetch('/Sweet-Toof-Quote/teeth-map.svg');
@@ -670,7 +679,7 @@
         const toothPrice = BASE_PRICES[material] + addOnCost;
         totalSalePrice += toothPrice;
         addOnSummary.push(`${toothId}: ${addOns.length ? addOns.map(addon => capitalizeWords(addon)).join(', ') : 'None'}`);
-        perToothBreakdown.push(`${toothId}: €${toothPrice} (${BASE_PRICES[material]} base + €${addOnCost} add-ons)`);
+        perToothBreakdown.push(`${toothId}: €${toothPrice} (€${BASE_PRICES[material]} base + €${addOnCost} add-ons)`);
       });
 
       const totalCost = (CAST_COST_PER_TOOTH * toothCount) + IMPRESSION_COST;
