@@ -1,816 +1,225 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Sweet Toof – Custom Grillz Order</title>
-  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
-  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'><path d='M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8zm0-14c-2.21 0-4 1.79-4 4h2c0-1.1.9-2 2-2s2 .9 2 2c0 2-3 1.75-3 5h2c0-2.25 3-2.5 3-5 0-2.21-1.79-4-4-4z' fill='%23005bbb'/></svg>" type="image/svg+xml">
-  <style>
-    body {
-      font-family: 'Poppins', Arial, sans-serif;
-      margin: 0;
-      background: #fdfdfd;
-      padding: 2rem 1rem;
-    }
-    header {
-      text-align: center;
-      margin-bottom: 2rem;
-    }
-    header img {
-      width: 100%;
-      max-width: 250px;
-      height: auto;
-      cursor: pointer;
-    }
-    .container {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      gap: 20px;
-    }
-    .svg-container {
-      width: 100%;
-      max-width: 600px;
-    }
-    svg {
-      max-width: 100%;
-      height: auto;
-    }
-    .interactive-path {
-      transition: fill 0.3s ease, opacity 0.3s ease;
-      cursor: pointer;
-    }
-    .interactive-path:hover {
-      opacity: 0.8;
-    }
-    .prompt-text {
-      font-weight: 600;
-      text-align: center;
-      font-size: 1.1rem;
-      color: #333;
-    }
-    .controls {
-      padding: 20px;
-      background: white;
-      border-radius: 8px;
-      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-      width: 100%;
-      max-width: 400px;
-    }
-    h1 {
-      color: #333;
-      text-align: center;
-      font-weight: 600;
-      font-size: 2rem;
-      margin: 0 0 1rem;
-    }
-    label {
-      display: block;
-      margin-bottom: 1rem;
-      font-weight: 600;
-      color: #444;
-    }
-    select, input {
-      width: 100%;
-      padding: 6px;
-      margin-top: 5px;
-      border: 1px solid #ccc;
-      border-radius: 4px;
-      transition: border-color 0.3s ease;
-    }
-    select:focus, input:focus {
-      outline: none;
-      border-color: #005bbb;
-    }
-    .results {
-      background: #f9f9f9;
-      padding: 1rem;
-      border-radius: 8px;
-      margin-top: 1rem;
-      opacity: 0;
-      transition: opacity 0.5s ease;
-    }
-    .results.visible {
-      opacity: 1;
-    }
-    .results h3, .results strong {
-      color: #333;
-      font-weight: 600;
-    }
-    .results p {
-      margin: 5px 0;
-    }
-    .add-on-group {
-      margin-bottom: 0.5rem;
-    }
-    .add-on-group label {
-      margin-bottom: 5px;
-      font-weight: 600;
-    }
-    .addon-buttons {
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      grid-template-rows: repeat(3, auto);
-      gap: 2px;
-      background: #fafafa;
-      padding: 8px;
-      border: 1px solid #eee;
-      border-radius: 4px;
-    }
-    .addon-button {
-      padding: 6px 4px;
-      border: 1px solid #ddd;
-      border-radius: 4px;
-      cursor: pointer;
-      background: #fff;
-      color: #333;
-      font-size: 0.85rem;
-      font-weight: 400;
-      width: 100%;
-      min-height: 80px;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      transition: background 0.3s ease, color 0.3s ease;
-      position: relative;
-    }
-    .addon-button .addon-name {
-      display: block;
-      font-size: 0.85rem;
-      line-height: 1.2;
-      text-align: center;
-    }
-    .addon-button .addon-price {
-      display: block;
-      font-size: 0.75rem;
-      color: #666;
-      margin-top: 2px;
-      line-height: 1.2;
-      text-align: center;
-    }
-    .addon-button.selected {
-      background: #005bbb;
-      color: #fff;
-      border-color: #004a9f;
-    }
-    .addon-button.selected .addon-price {
-      color: #e0e0e0;
-    }
-    .addon-button:hover {
-      background: #f0f0f0;
-      color: #222;
-    }
-    .addon-button.selected:hover {
-      background: #004a9f;
-    }
-    .addon-preview-icon {
-      position: absolute;
-      bottom: 4px;
-      right: 4px;
-      width: 16px;
-      height: 16px;
-      padding: 10px;
-      cursor: pointer;
-      fill: #666;
-      transition: fill 0.3s ease;
-    }
-    .addon-button.selected .addon-preview-icon {
-      fill: #e0e0e0;
-    }
-    .addon-preview-icon:hover {
-      fill: #005bbb;
-    }
-    .addon-button.selected .addon-preview-icon:hover {
-      fill: #fff;
-    }
-    .hint-text {
-      font-size: 0.75rem;
-      font-style: italic;
-      color: #666;
-      margin-left: 5px;
-    }
-    button {
-      padding: 8px 16px;
-      background: #005bbb;
-      color: white;
-      border: none;
-      border-radius: 5px;
-      cursor: pointer;
-      font-weight: 600;
-      width: 100%;
-      transition: background 0.3s ease;
-    }
-    button:hover {
-      background: #004a9f;
-    }
-    .secret-btn {
-      position: fixed;
-      top: 10px;
-      left: 10px;
-      width: 50px;
-      height: 50px;
-      background-color: transparent;
-      border: none;
-      cursor: pointer;
-      z-index: 9999;
-    }
-    .secret-info {
-      display: none;
-    }
-    footer {
-      margin-top: 2rem;
-      text-align: center;
-      font-size: 0.9rem;
-      color: #666;
-    }
-    footer a {
-      color: #005bbb;
-      text-decoration: none;
-      transition: color 0.3s ease;
-    }
-    footer a:hover {
-      color: #004a9f;
-    }
-    .gallery-modal {
-      display: none;
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      background: rgba(0, 0, 0, 0.8);
-      z-index: 1000;
-      justify-content: center;
-      align-items: center;
-      padding: 1rem;
-      box-sizing: border-box;
-    }
-    .gallery-modal-content {
-      position: relative;
-      max-width: 90%;
-      max-height: 90%;
-      text-align: center;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-    }
-    .gallery-modal img {
-      max-width: 100%;
-      max-height: 60vh;
-      object-fit: contain;
-      border-radius: 8px;
-      position: relative;
-    }
-    .gallery-modal-caption {
-      color: #fff;
-      margin-top: 1rem;
-      font-size: 1rem;
-      display: flex;
-      flex-direction: column;
-      gap: 0.5rem;
-      align-items: center;
-    }
-    .gallery-modal-description {
-      font-size: 0.9rem;
-      font-weight: 400;
-      max-width: 400px;
-      line-height: 1.4;
-    }
-    .gallery-modal-close {
-      position: absolute;
-      top: -40px;
-      right: 0;
-      background: #005bbb;
-      border: none;
-      color: #fff;
-      font-size: 1.2rem;
-      font-weight: 600;
-      cursor: pointer;
-      border-radius: 5px;
-      padding: 8px 12px;
-      transition: background 0.3s ease;
-      z-index: 1001;
-    }
-    .gallery-modal-close:hover {
-      background: #004a9f;
-    }
-    .gallery-modal-nav-container {
-      display: flex;
-      gap: 1rem;
-      margin-top: 1rem;
-      align-items: center;
-    }
-    .gallery-modal-nav {
-      background: #005bbb;
-      color: #fff;
-      border: none;
-      border-radius: 5px;
-      padding: 8px 16px;
-      cursor: pointer;
-      font-weight: 600;
-      transition: background 0.3s ease;
-      font-size: 1rem;
-    }
-    .gallery-modal-nav:hover {
-      background: #004a9f;
-    }
-    .gallery-modal-exit {
-      background: #005bbb;
-      color: #fff;
-      border: none;
-      border-radius: 5px;
-      padding: 8px 16px;
-      cursor: pointer;
-      font-weight: 600;
-      transition: background 0.3s ease;
-      font-size: 1rem;
-    }
-    .gallery-modal-exit:hover {
-      background: #004a9f;
-    }
-    @media (max-width: 600px) {
-      .gallery-modal img {
-        max-height: 50vh;
-      }
-      .gallery-modal-caption {
-        font-size: 0.9rem;
-      }
-      .gallery-modal-description {
-        font-size: 0.8rem;
-        max-width: 300px;
-      }
-      .gallery-modal-close {
-        top: -40px;
-        font-size: 1rem;
-        padding: 6px 10px;
-      }
-      .gallery-modal-nav, .gallery-modal-exit {
-        font-size: 0.9rem;
-        padding: 6px 12px;
-      }
-      .gallery-modal-nav-container {
-        gap: 0.5rem;
-      }
-    }
-  </style>
-</head>
-<body>
-  <button class="secret-btn" onclick="askPassword()" aria-label="Access secret info"></button>
-  <header>
-    <a href="https://www.instagram.com/Sweet.Toof.cy" target="_blank">
-      <img src="/Sweet-Toof-Quote/sweet-toof-logo.png" alt="Sweet Toof Logo" />
-    </a>
-  </header>
-  <div class="container">
-    <div class="prompt-text">Click on the teeth to add to your custom grillz order – unclick to remove.</div>
-    <div class="svg-container" id="svgContainer"></div>
-    <div class="controls">
-      <h1>Custom Grillz</h1>
-      <label>Client Name
-        <input type="text" id="clientName" aria-label="Client Name" />
-      </label>
-      <label>Material
-        <select id="material" aria-label="Select Material">
-          <option value="cobalt_chrome">Cobalt Chrome (€60)</option>
-          <option value="gold_plated">Gold Plated (€100)</option>
-          <option value="solid_gold">Solid Gold (€250)</option>
-        </select>
-      </label>
-      <div id="toothSelections"></div>
-      <button id="generateQuoteBtn" aria-label="Generate Quote">Generate Quote</button>
-      <div class="results" id="results" style="display:none;"></div>
-      <button id="copyQuoteBtn" style="margin-top: 10px; display: none;" aria-label="Copy Quote">📋 Copy My Quote</button>
-    </div>
-  </div>
-  <div class="gallery-modal" id="galleryModal">
-    <div class="gallery-modal-content">
-      <button class="gallery-modal-close" aria-label="Close gallery">×</button>
-      <img id="galleryImage" src="" alt="">
-      <div class="gallery-modal-caption" id="galleryCaption"></div>
-      <div class="gallery-modal-nav-container">
-        <button class="gallery-modal-nav prev" aria-label="Previous add-on">Previous</button>
-        <button class="gallery-modal-exit" aria-label="Exit gallery">Exit</button>
-        <button class="gallery-modal-nav next" aria-label="Next add-on">Next</button>
-      </div>
-    </div>
-  </div>
-  <footer>
-    <a href="https://www.instagram.com/Sweet.Toof.cy" target="_blank">Send us a message on Instagram @Sweet.Toof.Cy</a>
-  </footer>
-  <script>
-    function injectMaterialGradients() {
-      const svg = document.querySelector('svg');
-      if (!svg) return;
-
-      let defs = svg.querySelector('defs');
-      if (!defs) {
-        defs = document.createElementNS("http://www.w3.org/2000/svg", "defs");
-        svg.insertBefore(defs, svg.firstChild);
-      }
-
-      if (!svg.querySelector('#cobalt-chrome-gradient')) {
-        const cobaltGradient = document.createElementNS("http://www.w3.org/2000/svg", "linearGradient");
-        cobaltGradient.setAttribute("id", "cobalt-chrome-gradient");
-        cobaltGradient.setAttribute("x1", "0%");
-        cobaltGradient.setAttribute("y1", "0%");
-        cobaltGradient.setAttribute("x2", "100%");
-        cobaltGradient.setAttribute("y2", "100%");
-        
-        const cobaltStop1 = document.createElementNS("http://www.w3.org/2000/svg", "stop");
-        cobaltStop1.setAttribute("offset", "0%");
-        cobaltStop1.setAttribute("stop-color", "#d7dfe9");
-        cobaltStop1.setAttribute("stop-opacity", "1");
-        
-        const cobaltStop2 = document.createElementNS("http://www.w3.org/2000/svg", "stop");
-        cobaltStop2.setAttribute("offset", "100%");
-        cobaltStop2.setAttribute("stop-color", "#6b8299");
-        cobaltStop2.setAttribute("stop-opacity", "1");
-        
-        cobaltGradient.appendChild(cobaltStop1);
-        cobaltGradient.appendChild(cobaltStop2);
-        defs.appendChild(cobaltGradient);
-      }
-
-      if (!svg.querySelector('#gold-plated-gradient')) {
-        const goldPlatedGradient = document.createElementNS("http://www.w3.org/2000/svg", "linearGradient");
-        goldPlatedGradient.setAttribute("id", "gold-plated-gradient");
-        goldPlatedGradient.setAttribute("x1", "0%");
-        goldPlatedGradient.setAttribute("y1", "0%");
-        goldPlatedGradient.setAttribute("x2", "100%");
-        goldPlatedGradient.setAttribute("y2", "100%");
-        
-        const goldPlatedStop1 = document.createElementNS("http://www.w3.org/2000/svg", "stop");
-        goldPlatedStop1.setAttribute("offset", "0%");
-        goldPlatedStop1.setAttribute("stop-color", "#f0e7b7");
-        goldPlatedStop1.setAttribute("stop-opacity", "1");
-        
-        const goldPlatedStop2 = document.createElementNS("http://www.w3.org/2000/svg", "stop");
-        goldPlatedStop2.setAttribute("offset", "100%");
-        goldPlatedStop2.setAttribute("stop-color", "#d4c085");
-        goldPlatedStop2.setAttribute("stop-opacity", "1");
-        
-        goldPlatedGradient.appendChild(goldPlatedStop1);
-        goldPlatedGradient.appendChild(goldPlatedStop2);
-        defs.appendChild(goldPlatedGradient);
-      }
-
-      if (!svg.querySelector('#solid-gold-gradient')) {
-        const solidGoldGradient = document.createElementNS("http://www.w3.org/2000/svg", "linearGradient");
-        solidGoldGradient.setAttribute("id", "solid-gold-gradient");
-        solidGoldGradient.setAttribute("x1", "0%");
-        solidGoldGradient.setAttribute("y1", "0%");
-        solidGoldGradient.setAttribute("x2", "100%");
-        solidGoldGradient.setAttribute("y2", "100%");
-        
-        const solidGoldStop1 = document.createElementNS("http://www.w3.org/2000/svg", "stop");
-        solidGoldStop1.setAttribute("offset", "0%");
-        solidGoldStop1.setAttribute("stop-color", "#f7e788");
-        solidGoldStop1.setAttribute("stop-opacity", "1");
-        
-        const solidGoldStop2 = document.createElementNS("http://www.w3.org/2000/svg", "stop");
-        solidGoldStop2.setAttribute("offset", "100%");
-        solidGoldStop2.setAttribute("stop-color", "#d4af37");
-        solidGoldStop2.setAttribute("stop-opacity", "1");
-        
-        solidGoldGradient.appendChild(solidGoldStop1);
-        solidGoldGradient.appendChild(solidGoldStop2);
-        defs.appendChild(solidGoldGradient);
-      }
-    }
-
-    const BASE_PRICES = {
-      cobalt_chrome: 60,
-      gold_plated: 100,
-      solid_gold: 250
-    };
-
-    const MATERIAL_FILL_COLORS = {
-      cobalt_chrome: 'url(#cobalt-chrome-gradient)',
-      gold_plated: 'url(#gold-plated-gradient)',
-      solid_gold: 'url(#solid-gold-gradient)'
-    };
-
-    const ADD_ONS = {
-      plain_solid: { price: 0, description: "Sleek, solid grillz design with a smooth, polished finish for a classic look." },
-      fang_shaping: { price: 20, description: "Sharp, pointed shaping for a bold, fang-inspired style on your grillz." },
-      three_d_accents: { price: 50, description: "Personalized, raised 3D elements added to your grillz for a bold, sculpted look." },
-      cutout: { price: 30, description: "Custom cut-out patterns that enhance your grillz with a unique, open design." },
-      texture_finish: { price: 30, description: "Textured surface finish, like matte or brushed, adding variation to your grillz." },
-      window: { price: 30, description: "Large openings in the grillz that showcase your natural teeth with bold style." },
-      engraving: { price: 40, description: "Personalized engravings, such as initials or symbols, etched into your grillz." },
-      gem_inlay: { price: 75, description: "Sparkling gemstones embedded into your grillz for a luxurious, eye-catching shine." },
-      custom_design: { price: 100, description: "Fully bespoke design tailored to your vision, crafted uniquely for you." }
-    };
-
-    const ADD_ONS_ARRAY = Object.keys(ADD_ONS);
-
-    const ADD_ON_IMAGES = {};
-    Object.entries(ADD_ONS).forEach(([key, { price, description }]) => {
-      const imageName = key.replace('_', '-') + '-render.jpg';
-      ADD_ON_IMAGES[key] = `https://raw.githubusercontent.com/eyeohdice/Sweet-Toof-Quote/main/images/addons/${imageName}`;
-    });
-
-    const CAST_COST_PER_TOOTH = 20;
-    const IMPRESSION_COST = 3;
-    const selectedTeeth = new Map();
-    let currentFillColor = MATERIAL_FILL_COLORS['cobalt_chrome'];
-
-    function capitalizeWords(str) {
-      if (str === 'three_d_accents') return '3D Accents';
-      return str
-        .split('_')
-        .map(word => word.charAt(0).toUpperCase() + word.slice(1).toLowerCase())
-        .join(' ');
-    }
-
-    // Preload all gallery images
-    function preloadImages() {
-      Object.values(ADD_ON_IMAGES).forEach(src => {
-        const img = new Image();
-        img.src = src;
-      });
-    }
-
-    document.addEventListener('DOMContentLoaded', async () => {
-      preloadImages(); // Call the preload function on page load
-      const svgContainer = document.getElementById('svgContainer');
-      try {
-        const res = await fetch('/Sweet-Toof-Quote/teeth-map.svg');
-        const svgText = await res.text();
-        svgContainer.innerHTML = svgText;
-        svgContainer.querySelector('svg')?.setAttribute('viewBox', '0 300 1080 20');
-        injectMaterialGradients();
-        addSVGLabels();
-        initToothInteractivity();
-      } catch (err) {
-        console.error('Failed to load SVG:', err);
-        svgContainer.innerHTML = '<p>Failed to load SVG. Check your file path.</p>';
-      }
-    });
-
-    document.getElementById('material').addEventListener('change', e => {
-      const selected = e.target.value;
-      currentFillColor = MATERIAL_FILL_COLORS[selected];
-      document.querySelectorAll('.interactive-path').forEach(path => {
-        const id = mapToothId(path.dataset.tooth);
-        if (selectedTeeth.has(id)) path.setAttribute('fill', currentFillColor);
-      });
-    });
-
-    document.getElementById('generateQuoteBtn').addEventListener('click', updateQuote);
-
-    function askPassword() {
-      const input = prompt("Enter password:");
-      if (input === "IODICE25") {
-        document.querySelectorAll('.secret-info').forEach(el => el.style.display = 'block');
-      } else if (input) {
-        alert("Incorrect password");
-      }
-    }
-
-    function mapToothId(toothId) {
-      if (!toothId) return toothId;
-      if (toothId.startsWith('L')) {
-        return 'R' + toothId.slice(1);
-      } else if (toothId.startsWith('R')) {
-        return 'L' + toothId.slice(1);
-      }
-      return toothId;
-    }
-
-    function initToothInteractivity() {
-      document.querySelectorAll('.interactive-path').forEach(path => {
-        const originalToothId = path.dataset.tooth;
-        const toothId = mapToothId(originalToothId);
-        path.setAttribute('aria-label', `Tooth ${toothId}`);
-        path.addEventListener('click', () => {
-          const isSelected = selectedTeeth.has(toothId);
-          path.setAttribute('fill', isSelected ? 'transparent' : currentFillColor);
-          if (isSelected) {
-            selectedTeeth.delete(toothId);
-            document.getElementById(`control-${toothId}`)?.remove();
-          } else {
-            selectedTeeth.set(toothId, []);
-            addToothControl(toothId);
-          }
-        });
-      });
-    }
-
-    function addSVGLabels() {
-      const svg = document.querySelector('svg');
-      if (!svg) return;
-      const labels = [
-        { id: 'R1', x: 80, y: 580 },
-        { id: 'R2', x: 150, y: 580 },
-        { id: 'R3', x: 230, y: 580 },
-        { id: 'R4', x: 330, y: 580 },
-        { id: 'R5', x: 460, y: 590 },
-        { id: 'L1', x: 610, y: 590 },
-        { id: 'L2', x: 740, y: 580 },
-        { id: 'L3', x: 840, y: 580 },
-        { id: 'L4', x: 930, y: 580 },
-        { id: 'L5', x: 1000, y: 580 }
-      ];
-      labels.forEach(({ id, x, y }) => {
-        const text = document.createElementNS("http://www.w3.org/2000/svg", "text");
-        text.setAttribute('x', `${(x / 1080) * 100}%`);
-        text.setAttribute('y', `${(y / 1080) * 100}%`);
-        text.setAttribute('font-size', '16');
-        text.setAttribute('font-weight', 'bold');
-        text.setAttribute('text-anchor', 'middle');
-        text.setAttribute('fill', '#000');
-        text.textContent = id;
-        svg.appendChild(text);
-      });
-    }
-
-    function addToothControl(toothId) {
-      const container = document.getElementById('toothSelections');
-      const div = document.createElement('div');
-      div.id = `control-${toothId}`;
-      div.className = 'add-on-group';
-      div.innerHTML = `
-        <label>${toothId} Add-Ons <span class="hint-text">(Preview add-ons with eye icon)</span>
-          <div class="addon-buttons" id="addon-buttons-${toothId}">
-            ${Object.entries(ADD_ONS).sort((a, b) => a[1].price - b[1].price).map(([key, { price, description }]) => `
-              <button class="addon-button" data-addon="${key}" onclick="toggleAddOn('${toothId}', '${key}')" aria-label="${capitalizeWords(key)} add-on, €${price}">
-                <span class="addon-name">${capitalizeWords(key)}</span>
-                <span class="addon-price">€${price}</span>
-                <svg class="addon-preview-icon" onclick="event.stopPropagation(); openGallery('${key}');" aria-label="View ${capitalizeWords(key)} render" viewBox="0 0 24 24">
-                  <path d="M12 4.5C7 4.5 2.73 7.61 1 12c1.73 4.39 6 7.5 11 7.5s9.27-3.11 11-7.5c-1.73-4.39-6-7.5-11-7.5zM12 17c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5zm0-8c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3z"/>
-                </svg>
-              </button>
-            `).join('')}
-          </div>
-        </label>
-      `;
-      container.appendChild(div);
-    }
-
-    function toggleAddOn(toothId, addon) {
-      const addOns = selectedTeeth.get(toothId) || [];
-      const index = addOns.indexOf(addon);
-      const button = document.querySelector(`#addon-buttons-${toothId} [data-addon="${addon}"]`);
-      if (index === -1) {
-        addOns.push(addon);
-        button.classList.add('selected');
-      } else {
-        addOns.splice(index, 1);
-        button.classList.remove('selected');
-      }
-      selectedTeeth.set(toothId, addOns);
-    }
-
-    function updateQuote() {
-      const clientName = document.getElementById('clientName').value || 'Unnamed Client';
-      const material = document.getElementById('material').value;
-      const toothCount = selectedTeeth.size;
-      if (!toothCount) return alert('Please select at least one tooth');
-
-      let totalSalePrice = 0;
-      const addOnSummary = [];
-      const perToothBreakdown = [];
-
-      selectedTeeth.forEach((addOns, toothId) => {
-        const addOnCost = addOns.reduce((sum, key) => sum + ADD_ONS[key].price, 0);
-        const toothPrice = BASE_PRICES[material] + addOnCost;
-        totalSalePrice += toothPrice;
-        addOnSummary.push(`${toothId}: ${addOns.length ? addOns.map(addon => capitalizeWords(addon)).join(', ') : 'None'}`);
-        perToothBreakdown.push(`${toothId}: €${toothPrice} (€${BASE_PRICES[material]} base + €${addOnCost} add-ons)`);
-      });
-
-      const totalCost = (CAST_COST_PER_TOOTH * toothCount) + IMPRESSION_COST;
-      const profit = totalSalePrice - totalCost;
-      const marginPercent = ((profit / totalSalePrice) * 100).toFixed(2);
-      const depositDue = (totalSalePrice * 0.5).toFixed(2);
-      const timestamp = new Date().toISOString().replace(/[-:.TZ]/g, '').slice(0, 14);
-      const uniqueId = `${clientName.replace(/\s+/g, '').toUpperCase()}-${timestamp}`;
-
-      const results = document.getElementById('results');
-      results.style.display = 'block';
-      results.classList.add('visible');
-      results.innerHTML = `
-        <h3>Quote for ${clientName}</h3>
-        <p><strong>Quote ID:</strong> ${uniqueId}</p>
-        <p><strong>Material:</strong> ${material.replace('_', ' ')}</p>
-        <p><strong>Selected Teeth:</strong> ${toothCount}</p>
-        <p><strong>Add-Ons:</strong><br>${addOnSummary.join('<br>')}</p>
-        <p><strong>Per-Tooth Breakdown:</strong><br>${perToothBreakdown.join('<br>')}</p>
-        <p><strong>Total Sale Price:</strong> €${totalSalePrice}</p>
-        <div class="secret-info">
-          <p><strong>Total Cost:</strong> €${totalCost}</p>
-          <p><strong>Profit:</strong> €${profit}</p>
-          <p><strong>Profit Margin:</strong> ${marginPercent}%</p>
-          <p><strong>Deposit Due (50%):</strong> €${depositDue}</p>
-        </div>
-      `;
-
-      const quoteText = `
-Sweet Toof – Custom Grillz Quote
-Quote ID: ${uniqueId}
-Client: ${clientName}
-Material: ${material.replace('_', ' ')}
-Teeth Selected: ${toothCount}
-Add-Ons:
-${addOnSummary.join('\n')}
-Total Price: €${totalSalePrice}
-Deposit Due (50%): €${depositDue}
-`;
-
-      window.lastQuoteText = quoteText;
-      document.getElementById('copyQuoteBtn').style.display = 'block';
-    }
-
-    document.getElementById('copyQuoteBtn').addEventListener('click', () => {
-      if (!window.lastQuoteText) return alert("No quote available to copy yet.");
-      navigator.clipboard.writeText(window.lastQuoteText)
-        .then(() => alert('Quote copied to clipboard! \nSend this to @Sweet.Toof.cy on Instagram by clicking the link at the bottom of the page or the logo at the top of the page.'))
-        .catch(err => {
-          console.error('Copy failed:', err);
-          alert('Failed to copy the quote.');
-        });
-    });
-
-    let currentAddOnIndex = 0;
-
-    function openGallery(addonKey) {
-      currentAddOnIndex = ADD_ONS_ARRAY.indexOf(addonKey);
-      updateGalleryModal();
-      const modal = document.getElementById('galleryModal');
-      modal.style.display = 'flex';
-      document.body.style.overflow = 'hidden';
-    }
-
-    function closeGallery() {
-      const modal = document.getElementById('galleryModal');
-      modal.style.display = 'none';
-      document.body.style.overflow = 'auto';
-    }
-
-    function updateGalleryModal() {
-      const addonKey = ADD_ONS_ARRAY[currentAddOnIndex];
-      const imageSrc = ADD_ON_IMAGES[addonKey];
-      const addonName = capitalizeWords(addonKey);
-      const { price, description } = ADD_ONS[addonKey];
-
-      const imageElement = document.getElementById('galleryImage');
-      const captionElement = document.getElementById('galleryCaption');
-
-      imageElement.src = imageSrc;
-      imageElement.alt = `High-quality render of ${addonName} add-on`;
-      captionElement.innerHTML = `
-        <span>${addonName} (€${price})</span>
-        <span class="gallery-modal-description">${description}</span>
-      `;
-    }
-
-    document.querySelector('.gallery-modal-close').addEventListener('click', closeGallery);
-    document.querySelector('.gallery-modal-exit').addEventListener('click', closeGallery);
-
-    document.querySelector('.gallery-modal-nav.prev').addEventListener('click', () => {
-      currentAddOnIndex = (currentAddOnIndex - 1 + ADD_ONS_ARRAY.length) % ADD_ONS_ARRAY.length;
-      updateGalleryModal();
-    });
-
-    document.querySelector('.gallery-modal-nav.next').addEventListener('click', () => {
-      currentAddOnIndex = (currentAddOnIndex + 1) % ADD_ONS_ARRAY.length;
-      updateGalleryModal();
-    });
-
-    let touchStartX = 0;
-    let touchEndX = 0;
-
-    document.getElementById('galleryModal').addEventListener('touchstart', e => {
-      touchStartX = e.changedTouches[0].screenX;
-    });
-
-    document.getElementById('galleryModal').addEventListener('touchend', e => {
-      touchEndX = e.changedTouches[0].screenX;
-      if (touchStartX - touchEndX > 50) {
-        currentAddOnIndex = (currentAddOnIndex + 1) % ADD_ONS_ARRAY.length;
-        updateGalleryModal();
-      } else if (touchEndX - touchStartX > 50) {
-        currentAddOnIndex = (currentAddOnIndex - 1 + ADD_ONS_ARRAY.length) % ADD_ONS_ARRAY.length;
-        updateGalleryModal();
-      }
-    });
-
-    document.addEventListener('keydown', e => {
-      if (document.getElementById('galleryModal').style.display === 'flex') {
-        if (e.key === 'Escape') {
-          closeGallery();
-        } else if (e.key === 'ArrowLeft') {
-          currentAddOnIndex = (currentAddOnIndex - 1 + ADD_ONS_ARRAY.length) % ADD_ONS_ARRAY.length;
-          updateGalleryModal();
-        } else if (e.key === 'ArrowRight') {
-          currentAddOnIndex = (currentAddOnIndex + 1) % ADD_ONS_ARRAY.length;
-          updateGalleryModal();
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Design Your Gold Grillz</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+       .tooth {
+            /* Basic tooth styling */
+            cursor: pointer;
+            user-select: none;
+            border-radius: 8px; /* More rounded corners */
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.8rem; /* Slightly larger font */
+            transition: background-color 0.3s ease, box-shadow 0.3s ease; /* Smooth transition, add box-shadow */
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1); /* More pronounced shadow */
+            border: 1px solid transparent; /* Add transparent border */
         }
-      }
-    });
-  </script>
+
+        .tooth:hover {
+            background-color: #f7d083;  /* Light gold hover, more subtle */
+            transform: translateY(-2px); /* Slight lift on hover */
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15); /* Increased shadow on hover */
+            border-color: #f7d083; /* Change border color on hover */
+        }
+
+        .tooth.selected {
+            background-color: #f59e0b; /* Tailwind's amber-500 */
+            color: #ffffff;
+            box-shadow: 0 0 10px rgba(245, 158, 11, 0.7); /* Stronger glow */
+            border-color: #f59e0b; /* Keep border color when selected */
+        }
+
+        /* Frontal Dental Model Layout */
+        .upper-arch {
+            display: grid;
+            grid-template-columns: repeat(8, minmax(40px, 1fr)); /* Slightly wider columns */
+            gap: 3px; /* Increased gap */
+            margin-bottom: 6px; /* Increased margin */
+            justify-content: center;
+        }
+        .lower-arch {
+            display: grid;
+            grid-template-columns: repeat(8, minmax(40px, 1fr));
+            gap: 3px;
+            justify-content: center;
+        }
+
+        .central-incisor {
+            width: 100%;
+            height: auto;
+        }
+
+         @media (min-width: 640px) {
+            .tooth {
+                font-size: 0.9rem;
+            }
+        }
+        @media (min-width: 768px) {
+            .tooth {
+                 font-size: 1rem;
+            }
+        }
+        @media (min-width: 1024px) {
+            .tooth {
+                font-size: 1.1rem; /* Further increase font size on larger screens */
+            }
+        }
+
+        #selected-teeth {
+            font-size: 1.2rem; /* Larger selected teeth text */
+            font-weight: 600;  /* Use semibold font weight */
+            color: #4a5568; /* Darker text color */
+        }
+
+        .addon-button {
+            /* Style for the add-on buttons */
+            background-color: #edf2f7; /* Light background color */
+            color: #4a5568; /* Darker text color */
+            padding: 10px 16px;
+            border-radius: 6px;
+            font-size: 0.9rem;
+            cursor: pointer;
+            transition: background-color 0.3s ease, transform 0.2s ease, box-shadow 0.3s ease; /* Added box-shadow transition */
+            border: 1px solid transparent; /* Add transparent border */
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.08); /* Subtle shadow */
+            margin: 2px;
+            display: flex; /* Use flexbox for layout */
+            align-items: center;
+            justify-content: space-between; /* Space between text and price */
+            width: 100%; /* Make buttons fill their container */
+            text-align: left; /* Align text to the left */
+        }
+
+      .addon-button:hover {
+            background-color: #d1d8e3; /* Slightly darker hover */
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15); /* Increased shadow on hover */
+            border-color: #d1d8e3; /* Change border color on hover */
+        }
+
+        .addon-button.selected {
+            background-color: #f59e0b; /* Tailwind's amber-500 */
+            color: #ffffff;
+            box-shadow: 0 0 8px rgba(245, 158, 11, 0.5); /* Add glow effect */
+            border-color: #f59e0b; /* Keep border color when selected */
+        }
+
+        .addon-name {
+            margin-right: auto; /* Push name to the left */
+            margin-left: 0;
+        }
+
+        .addon-price {
+           font-weight: 600; /* Make price font bolder */
+           margin-left: 8px; /* Add some margin before price */
+        }
+
+       .addon-preview-icon {
+            width: 20px; /* Increased icon size */
+            height: 20px;
+            margin-left: 12px; /* Increased margin */
+            cursor: pointer;
+            fill: currentColor; /* Inherit color from parent */
+            color: #4a5568; /* Icon color */
+            transition: color 0.2s ease; /* Smooth transition */
+        }
+
+        .addon-preview-icon:hover {
+            color: #f59e0b; /* Change color on hover */
+        }
+
+        .hint-text {
+            font-size: 0.8rem;
+            color: #a0aec0;
+            margin-left: 0.5rem;
+        }
+
+    </style>
+</head>
+<body class="bg-gray-100 font-inter">
+    <div class="container mx-auto p-6 sm:p-10 md:p-12 lg:p-16">
+        <h1 class="text-3xl sm:text-4xl md:text-5xl font-bold text-center text-gray-800 mb-8">Design Your Custom Gold Grillz</h1>
+        <p class="text-center text-gray-600 text-lg mb-10">Click on the teeth you want for your grillz:</p>
+
+        <div class="bg-white shadow-lg rounded-xl p-6 mb-10">
+            <div class="upper-arch">
+                <div class="tooth rounded-md  text-center py-4 sm:py-5  border border-gray-300 hover:bg-amber-100 " data-tooth="18">18</div>
+                <div class="tooth rounded-md  text-center py-4 sm:py-5  border border-gray-300 hover:bg-amber-100 " data-tooth="17">17</div>
+                <div class="tooth rounded-md  text-center py-4 sm:py-5  border border-gray-300 hover:bg-amber-100 " data-tooth="16">16</div>
+                <div class="tooth rounded-md  text-center py-4 sm:py-5  border border-gray-300 hover:bg-amber-100 " data-tooth="15">15</div>
+                <div class="tooth rounded-md  text-center py-4 sm:py-5  border border-gray-300 hover:bg-amber-100 " data-tooth="14">14</div>
+                <div class="tooth rounded-md  text-center py-4 sm:py-5  border border-gray-300 hover:bg-amber-100 " data-tooth="13">13</div>
+                <div class="tooth rounded-md  text-center py-4 sm:py-5  border border-gray-300 hover:bg-amber-100 " data-tooth="12">12</div>
+                <div class="tooth rounded-md  text-center py-4 sm:py-5  border border-gray-300 hover:bg-amber-100 " data-tooth="11">11</div>
+            </div>
+            <div class="upper-arch">
+                <div class="tooth rounded-md  text-center py-4 sm:py-5  border border-gray-300 hover:bg-amber-100 " data-tooth="21">21</div>
+                <div class="tooth rounded-md  text-center py-4 sm:py-5  border border-gray-300 hover:bg-amber-100 " data-tooth="22">22</div>
+                <div class="tooth rounded-md  text-center py-4 sm:py-5  border border-gray-300 hover:bg-amber-100 " data-tooth="23">23</div>
+                <div class="tooth rounded-md  text-center py-4 sm:py-5  border border-gray-300 hover:bg-amber-100 " data-tooth="24">24</div>
+                <div class="tooth rounded-md  text-center py-4 sm:py-5  border border-gray-300 hover:bg-amber-100 " data-tooth="25">25</div>
+                <div class="tooth rounded-md  text-center py-4 sm:py-5  border border-gray-300 hover:bg-amber-100 " data-tooth="26">26</div>
+                <div class="tooth rounded-md  text-center py-4 sm:py-5  border border-gray-300 hover:bg-amber-100 " data-tooth="27">27</div>
+                <div class="tooth rounded-md  text-center py-4 sm:py-5  border border-gray-300 hover:bg-amber-100 " data-tooth="28">28</div>
+            </div>
+            <div class="lower-arch" style="margin-top: 15px;">
+                <div class="tooth rounded-md  text-center py-4 sm:py-5  border border-gray-300 hover:bg-amber-100 " data-tooth="48">48</div>
+                <div class="tooth rounded-md  text-center py-4 sm:py-5  border border-gray-300 hover:bg-amber-100 " data-tooth="47">47</div>
+                <div class="tooth rounded-md  text-center py-4 sm:py-5  border border-gray-300 hover:bg-amber-100 " data-tooth="46">46</div>
+                <div class="tooth rounded-md  text-center py-4 sm:py-5  border border-gray-300 hover:bg-amber-100 " data-tooth="45">45</div>
+                <div class="tooth rounded-md  text-center py-4 sm:py-5  border border-gray-300 hover:bg-amber-100 " data-tooth="44">44</div>
+                <div class="tooth rounded-md  text-center py-4 sm:py-5  border border-gray-300 hover:bg-amber-100 " data-tooth="43">43</div>
+                <div class="tooth rounded-md  text-center py-4 sm:py-5  border border-gray-300 hover:bg-amber-100 " data-tooth="42">42</div>
+                <div class="tooth rounded-md  text-center py-4 sm:py-5  border border-gray-300 hover:bg-amber-100 " data-tooth="41">41</div>
+            </div>
+            <div class="lower-arch">
+                <div class="tooth rounded-md  text-center py-4 sm:py-5  border border-gray-300 hover:bg-amber-100 " data-tooth="31">31</div>
+                <div class="tooth rounded-md  text-center py-4 sm:py-5  border border-gray-300 hover:bg-amber-100 " data-tooth="32">32</div>
+                <div class="tooth rounded-md  text-center py-4 sm:py-5  border border-gray-300 hover:bg-amber-100 " data-tooth="33">33</div>
+                <div class="tooth rounded-md  text-center py-4 sm:py-5  border border-gray-300 hover:bg-amber-100 " data-tooth="34">34</div>
+                <div class="tooth rounded-md  text-center py-4 sm:py-5  border border-gray-300 hover:bg-amber-100 " data-tooth="35">35</div>
+                <div class="tooth rounded-md  text-center py-4 sm:py-5  border border-gray-300 hover:bg-amber-100 " data-tooth="36">36</div>
+                <div class="tooth rounded-md  text-center py-4 sm:py-5  border border-gray-300 hover:bg-amber-100 " data-tooth="37">37</div>
+                <div class="tooth rounded-md  text-center py-4 sm:py-5  border border-gray-300 hover:bg-amber-100 " data-tooth="38">38</div>
+            </div>
+        </div>
+
+        <div id="selected-teeth" class="mt-8 text-xl font-semibold text-gray-700 text-center">Selected Teeth:</div>
+        <div class="mt-10 flex justify-center">
+            <button onclick="getSelectedTeeth()" class="bg-gray-800 hover:bg-gray-700 text-white font-bold py-3 px-6 rounded-md shadow-lg transition-colors duration-300 text-lg">
+                View Selected Teeth
+            </button>
+        </div>
+    </div>
+
+    <script>
+        const teeth = document.querySelectorAll('.tooth');
+        const selectedTeethDisplay = document.getElementById('selected-teeth');
+        let selectedTeeth = [];
+
+        teeth.forEach(tooth => {
+            tooth.addEventListener('click', () => {
+                const toothNumber = tooth.dataset.tooth;
+                tooth.classList.toggle('selected');
+                if (tooth.classList.contains('selected')) {
+                    selectedTeeth.push(toothNumber);
+                } else {
+                    selectedTeeth = selectedTeeth.filter(num => num !== toothNumber);
+                }
+            });
+        });
+
+        function getSelectedTeeth() {
+            selectedTeethDisplay.textContent = `Selected Teeth: ${selectedTeeth.sort().join(', ')}`;
+            // In a real application, you would send this data to a server.
+            console.log("Selected Tooth Numbers:", selectedTeeth);
+        }
+    </script>
 </body>
 </html>
