@@ -204,6 +204,7 @@
       font-weight: 600;
       width: 100%;
       transition: background 0.3s ease;
+      margin-top: 10px;
     }
     button:hover {
       background: #004a9f;
@@ -381,10 +382,11 @@
           <option value="solid_gold">Solid Gold (€250)</option>
         </select>
       </label>
+      <button id="addonGalleryBtn" aria-label="View Addon Gallery">Addon Gallery</button>
       <div id="toothSelections"></div>
       <button id="generateQuoteBtn" aria-label="Generate Quote">Generate Quote</button>
       <div class="results" id="results" style="display:none;"></div>
-      <button id="copyQuoteBtn" style="margin-top: 10px; display: none;" aria-label="Copy Quote">📋 Copy My Quote</button>
+      <button id="copyQuoteBtn" style="display: none;" aria-label="Copy Quote">📋 Copy My Quote</button>
     </div>
   </div>
   <div class="gallery-modal" id="galleryModal">
@@ -563,6 +565,7 @@
     });
 
     document.getElementById('generateQuoteBtn').addEventListener('click', updateQuote);
+    document.getElementById('addonGalleryBtn').addEventListener('click', () => openGallery(ADD_ONS_ARRAY[0]));
 
     function askPassword() {
       const input = prompt("Enter password:");
